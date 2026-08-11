@@ -1,6 +1,11 @@
 {
     "git.path": "C:\\Program Files\\Git\\bin\\git.exe",
+    "git.useEditorAsCommitTemplate": false,
     "terminal.integrated.env.windows": {
-        "GIT_ASKPASS": ""
+        "GIT_ASKPASS": "",
+        "GIT_TERMINAL_PROMPT": "1"
+    },
+    "[git-commit]": {
+        "editor.defaultFormatter": "GitHub.copilot-chat"
     }
 }
