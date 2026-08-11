@@ -1,0 +1,24 @@
+# Python environment
+venv/
+ENV/
+.env
+
+# Bytecode
+*.py[cod]
+__pycache__/
+
+# Django
+db.sqlite3
+
+# Editor directories
+.vscode/
+.idea/
+
+# GitHub Actions
+.github/
+
+# Test artifacts
+.pytest_cache/
+
+# OS files
+.DS_Store
