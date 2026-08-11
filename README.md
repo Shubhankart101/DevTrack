@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # DevTrack
 
 DevTrack is a minimal Django backend API for tracking engineering issues. It supports reporter creation, issue filing, issue status filtering, and JSON-based persistence. The project is designed to be simple, testable in Postman, and easy to run locally.
@@ -228,5 +227,3 @@ I chose JSON file persistence over Django database models for this project becau
 - [ ] README includes run instructions, endpoint behavior, design decision, and testing notes
 - [ ] Screenshots added for successful and failed requests
 =======
-# DevTrack
->>>>>>> 198d18f7d762339b742c6046d7a69c77a170ffd4
