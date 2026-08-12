@@ -1,48 +1,25 @@
-terraform {
-  required_version = ">= 1.5.0"
+module "resource_group" {
+  source = "./modules/resource_group"
 
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-  subscription_id = var.subscription_id
-  tenant_id       = var.tenant_id
-}
-
-resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
 
-resource "azurerm_service_plan" "plan" {
+module "service_plan" {
+  source = "./modules/service_plan"
+
   name                = var.app_service_plan_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  os_type             = "Linux"
-  sku_name            = "B1"
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  sku_name            = var.app_service_plan_sku
 }
 
-resource "azurerm_linux_web_app" "app" {
+module "linux_web_app" {
+  source = "./modules/linux_web_app"
+
   name                = var.app_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.plan.id
-
-  site_config {
-    application_stack {
-      python_version = "3.12"
-    }
-  }
-
-  app_settings = {
-    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
-    ENABLE_ORYX_BUILD              = "true"
-    PYTHONPATH                     = "/home/site/wwwroot"
-  }
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  service_plan_id     = module.service_plan.id
+  python_version      = var.python_version
 }

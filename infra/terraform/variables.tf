@@ -26,7 +26,19 @@ variable "app_service_plan_name" {
   default     = "plan-devtrack"
 }
 
+variable "app_service_plan_sku" {
+  description = "Azure App Service plan SKU"
+  type        = string
+  default     = "B1"
+}
+
 variable "app_name" {
   description = "Azure Web App name"
   type        = string
+}
+
+variable "python_version" {
+  description = "Python runtime version for the Azure Web App"
+  type        = string
+  default     = "3.12"
 }
