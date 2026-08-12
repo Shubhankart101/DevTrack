@@ -1,0 +1,15 @@
+#cloud-config
+package_update: true
+packages:
+  - curl
+  - jq
+
+runcmd:
+  - mkdir -p /opt/actions-runner
+  - cd /opt/actions-runner && curl -fsSL -o actions-runner-linux-x64-${runner_version}.tar.gz https://github.com/actions/runner/releases/download/v${runner_version}/actions-runner-linux-x64-${runner_version}.tar.gz
+  - cd /opt/actions-runner && tar xzf actions-runner-linux-x64-${runner_version}.tar.gz
+  - cd /opt/actions-runner && ./bin/installdependencies.sh
+  - chown -R ${admin_username}:${admin_username} /opt/actions-runner
+  - su - ${admin_username} -c 'cd /opt/actions-runner && ./config.sh --url https://github.com/${github_repository} --token ${registration_token} --name ${runner_name} --labels ${runner_labels} --unattended --replace'
+  - cd /opt/actions-runner && ./svc.sh install ${admin_username}
+  - cd /opt/actions-runner && ./svc.sh start

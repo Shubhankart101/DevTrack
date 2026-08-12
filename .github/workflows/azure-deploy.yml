@@ -1,45 +1,37 @@
-name: Deploy to Azure Web App
+name: Provision App Infrastructure
 
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: GitHub environment name
+        required: true
+        default: dev
+      terraform_action:
+        description: Terraform action to run
+        required: true
+        default: plan
+        type: choice
+        options:
+          - plan
+          - apply
       python-version:
-        description: Python version to use
+        description: Python runtime version for the Web App
         required: false
         default: '3.12'
       app-name:
-        description: Azure Web App name
+        description: Azure Web App name override
         required: false
         default: ''
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    env:
-      PYTHON_VERSION: ${{ inputs.python-version || '3.12' }}
-      AZURE_WEBAPP_NAME: ${{ inputs.app-name || secrets.AZURE_WEBAPP_NAME }}
-
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run Django checks
-        run: |
-          python manage.py check
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: .
+  app-infra:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: ${{ inputs.environment }}
+      terraform_action: ${{ inputs.terraform_action }}
+      working_directory: infra/terraform
+      python_version: ${{ inputs.python-version }}
+      app_name: ${{ inputs.app-name }}
+      provision_runner: false
+    secrets: inherit
