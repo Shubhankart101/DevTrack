@@ -31,5 +31,17 @@ override.tf.json
 *_override.tf.json
 .terraform.lock.hcl
 
+.vscode/*.log
+.vscode/*.db
+.vscode/*.db-journal
+.vscode/*.vscdb
+.vscode/*.vscdb-journal
+
+.coverage
+coverage.xml
+htmlcov/
+media/
+staticfiles/
+
 .DS_Store
 Thumbs.db
