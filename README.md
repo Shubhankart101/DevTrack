@@ -2,21 +2,33 @@
 
 DevTrack is a minimal Django backend API for tracking engineering issues. It supports reporter creation, issue filing, issue status filtering, and JSON-based persistence.
 
-![DevTrack code loop](docs/assets/devtrack-code-loop.gif)
+<p align="center">
+	<img src="docs/assets/devtrack-code-loop.gif" width="560" alt="DevTrack code loop">
+</p>
+
+<p align="center"><a href=".github/workflows/terraform.yml">Reusable Terraform template</a></p>
 
 ## The DevTrack lifecycle
 
-| 1. Boot the project | 2. Get the tests moving |
-| --- | --- |
-| ![Office team ready](docs/assets/office.gif)<br>**Welcome to DevTrack.** | ![Dwight bouncing](docs/assets/bounce-dwight.gif)<br>**The test suite is alive.** |
+### 1. Pull request checks
 
-| 3. Ship the good news | 4. Add a little chaos |
-| --- | --- |
-| ![Great job](docs/assets/great-job.gif)<br>**Checks pass. Deploy with confidence.** | ![That's what she said](docs/assets/thats-what-she-said-what-she-said.gif)<br>**The API response writes itself.** |
+<img src="docs/assets/office.gif" width="560" alt="Office team ready"><br>**<a href=".github/workflows/pull-request-tests.yml">Pull Request Tests</a>** keep every change honest.
 
-| 5. Debug, then repeat |
-| --- |
-| ![Tired Office](docs/assets/tired-office.gif)<br>**When the bug is “just one small fix.”** |
+### 2. Extended test run
+
+<img src="docs/assets/bounce-dwight.gif" width="560" alt="Dwight bouncing"><br>**<a href=".github/workflows/extended-tests.yml">Extended Manual Tests</a>** get the test suite moving.
+
+### 3. Build, test, and deploy
+
+<img src="docs/assets/great-job.gif" width="560" alt="Great job"><br>**<a href=".github/workflows/app-deploy.yml">Build, Test, and Deploy</a>** when the checks pass.
+
+### 4. Provision app infrastructure
+
+<img src="docs/assets/thats-what-she-said-what-she-said.gif" width="560" alt="That's what she said"><br>**<a href=".github/workflows/azure-deploy.yml">Provision App Infrastructure</a>** before the API response writes itself.
+
+### 5. Provision the runner
+
+<img src="docs/assets/tired-office.gif" width="560" alt="Tired Office"><br>**<a href=".github/workflows/runner-infra.yml">Provision GitHub Runner Infrastructure</a>**, then debug, then repeat.
 
 ## Contents
 
@@ -78,7 +90,9 @@ The `main` branch should require the pull-request test job as a branch protectio
 
 ## Until the next issue
 
-![Tired Office debugging loop](docs/assets/tired-office.gif)
+<p align="center">
+	<img src="docs/assets/tired-office.gif" width="560" alt="Tired Office debugging loop">
+</p>
 
 
 
