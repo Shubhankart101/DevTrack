@@ -15,11 +15,11 @@ on:
         options:
           - plan
           - apply
-      python-version:
+      python_version:
         description: Python runtime version for the Web App
         required: false
         default: '3.12'
-      app-name:
+      app_name:
         description: Azure Web App name override
         required: false
         default: ''
@@ -31,7 +31,7 @@ jobs:
       environment: ${{ inputs.environment }}
       terraform_action: ${{ inputs.terraform_action }}
       working_directory: infra/terraform
-      python_version: ${{ inputs.python-version }}
-      app_name: ${{ inputs.app-name }}
+      python_version: ${{ inputs.python_version }}
+      app_name: ${{ inputs.app_name }}
       provision_runner: false
     secrets: inherit
