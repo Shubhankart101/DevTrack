@@ -4,6 +4,20 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 ![DevTrack code loop](docs/assets/devtrack-code-loop.gif)
 
+## The DevTrack lifecycle
+
+| 1. Boot the project | 2. Get the tests moving |
+| --- | --- |
+| ![Office team ready](docs/assets/office.gif)<br>**Welcome to DevTrack.** | ![Dwight bouncing](docs/assets/bounce-dwight.gif)<br>**The test suite is alive.** |
+
+| 3. Ship the good news | 4. Add a little chaos |
+| --- | --- |
+| ![Great job](docs/assets/great-job.gif)<br>**Checks pass. Deploy with confidence.** | ![That's what she said](docs/assets/thats-what-she-said-what-she-said.gif)<br>**The API response writes itself.** |
+
+| 5. Debug, then repeat |
+| --- |
+| ![Tired Office](docs/assets/tired-office.gif)<br>**When the bug is “just one small fix.”** |
+
 ## Contents
 
 | Section | Description |
@@ -61,6 +75,10 @@ The `main` branch should require the pull-request test job as a branch protectio
 | API reference & examples | [docs/api.md](docs/api.md) |
 | Deployment, pipelines & secrets | [docs/deployment.md](docs/deployment.md) |
 | Architecture, data model & validation | [docs/architecture.md](docs/architecture.md) |
+
+## Until the next issue
+
+![Tired Office debugging loop](docs/assets/tired-office.gif)
 
 
 
