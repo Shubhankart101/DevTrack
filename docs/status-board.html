@@ -248,7 +248,7 @@
           snapshot.source = 'snapshot';
           render(snapshot);
         } catch (snapshotError) {
-          runs.innerHTML = `<div class="error">${escapeHtml(error.message)}<br><small>The authenticated Pages snapshot is unavailable. Rerun the Publish Pipeline Status Board workflow.</small></div>`;
+          runs.innerHTML = `<div class="error">${escapeHtml(error.message)}<br><small>The authenticated Pages snapshot is unavailable. Run Publish Pipeline Status Board successfully once, then reload this page.</small></div>`;
         }
       }
     }

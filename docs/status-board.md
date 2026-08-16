@@ -84,7 +84,7 @@ Return to the PowerShell terminal running the server and press `Ctrl+C`.
 
 ## Public repository limitation
 
-The browser calls GitHub directly without exposing a token. If the unauthenticated API quota is exceeded, the dashboard falls back to `status-board-data.json`, which is generated with the GitHub Actions token during the Pages publish workflow. Do not put a personal access token in `status-board.html` or any other static file. For private repositories, use a secure server-side proxy or the authenticated Pages snapshot.
+The browser calls GitHub directly without exposing a token. If the unauthenticated API quota is exceeded, the dashboard falls back to `status-board-data.json`, which is generated with the GitHub Actions token before Pages configuration during the publish workflow. Run the publisher successfully once after this fallback is added so the snapshot exists in the published artifact. Do not put a personal access token in `status-board.html` or any other static file.
 
 ## GitHub Pages
 

@@ -19,9 +19,6 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
       - name: Capture authenticated Actions snapshot
         shell: bash
         env:
@@ -33,6 +30,9 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" \
             > docs/status-board-data.json
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload status board
         uses: actions/upload-pages-artifact@v3
