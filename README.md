@@ -30,6 +30,20 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <img src="docs/assets/tired-office.gif" width="560" alt="Tired Office"><br>**<a href=".github/workflows/runner-infra.yml">Provision GitHub Runner Infrastructure</a>**, then debug, then repeat.
 
+## Pipeline status board
+
+### Queued
+
+<img src="docs/assets/pipeline-queued.gif" width="560" alt="Pipeline queued"><br>Start with **<a href=".github/workflows/runner-infra.yml">Provision GitHub Runner Infrastructure</a>**.
+
+### Running
+
+<img src="docs/assets/pipeline-running.gif" width="560" alt="Pipeline running"><br>**<a href=".github/workflows/extended-tests.yml">Extended Manual Tests</a>** are executing.
+
+### Passed
+
+<img src="docs/assets/pipeline-success.gif" width="560" alt="Pipeline passed"><br>**<a href=".github/workflows/app-deploy.yml">Build, Test, and Deploy</a>** is ready to run.
+
 ## Contents
 
 | Section | Description |
