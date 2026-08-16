@@ -8,6 +8,8 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <p align="center"><a href=".github/workflows/terraform.yml">Reusable Terraform template</a></p>
 
+<p align="center"><a href="https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack">Open the live pipeline runs dashboard</a></p>
+
 <p align="center"><a href="https://github.com/Shubhankart101/DevTrack/actions">Open the active pipeline runs dashboard</a></p>
 
 ## The DevTrack lifecycle
@@ -81,7 +83,7 @@ The repository has three application workflows:
 
 The `main` branch should require the pull-request test job as a branch protection status check and disallow direct pushes. Infrastructure workflows are documented separately in [docs/deployment.md](docs/deployment.md).
 
-Use the [pipeline troubleshooting guide](docs/README.md) when a run is skipped or fails. The live-run tracker dashboard is retired for now; its source is retained for future reactivation.
+Use the [pipeline troubleshooting guide](docs/README.md) when a run is skipped or fails. The live-run tracker dashboard is available through GitHub Pages.
 
 ## Documentation
 

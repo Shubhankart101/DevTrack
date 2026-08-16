@@ -1,6 +1,6 @@
-# Local pipeline status boards (inactive)
+# Local and GitHub Pages pipeline status boards
 
-The pipeline board implementation is retained in `status-board.html` for future use but is currently inactive. It is not linked from the root README or served as the default Pages entrypoint. Running [publish-status-board.yml](../.github/workflows/publish-status-board.yml) replaces the published site with an inactive placeholder instead of publishing this board.
+The pipeline board is available locally and through GitHub Pages. Run [publish-status-board.yml](../.github/workflows/publish-status-board.yml) manually to publish the current `docs` directory.
 
 ## Dashboard mood
 
@@ -54,21 +54,17 @@ http://127.0.0.1:8000/status-board.html?repo=OWNER%2FREPOSITORY&branch=BRANCH_NA
 
 You can also change the repository and branch in the page controls and select **Refresh runs**. The URL updates automatically.
 
-## Filter with the GIF controls
+## Status filters and cues
 
-The entertaining GIF cards are live filters:
+Use the text buttons at the top of the dashboard to filter **All runs**, **Failed**, **Running**, or **Succeeded**. The entertaining GIFs are visual cues inside the pipeline run cards, not clickable filters.
 
-- Failed runs: `?status=failure`
-- Running runs: `?status=running`
-- Succeeded runs: `?status=success`
-
-For example, the succeeded `main` view is:
+For example, the `main` branch view is:
 
 ```text
-http://127.0.0.1:8000/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main&status=success
+http://127.0.0.1:8000/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main
 ```
 
-Selecting a GIF updates the URL, so filtered boards can be bookmarked or shared locally.
+Click a run to expand its stages and open the full GitHub Actions log.
 
 ## What the board shows
 

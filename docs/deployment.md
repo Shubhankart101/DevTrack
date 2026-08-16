@@ -28,14 +28,14 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 | Workflow | Purpose |
 | --- | --- |
-| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually remove the published status board and deploy an inactive placeholder |
+| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually publish the standalone GitHub Actions status board to GitHub Pages |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
 
-## Standalone pipeline status board (inactive)
+## Standalone pipeline status board
 
-The standalone [status-board.html](status-board.html) implementation is retained for future use but is currently inactive and has no active README entrypoint. Use [status-board.md](status-board.md) for its preserved local setup and branch-specific URL details when it is reactivated.
+The standalone [status-board.html](status-board.html) dashboard is published through GitHub Pages and can also be run locally. Use [status-board.md](status-board.md) for setup and branch-specific URLs.
 
 The preserved dashboard code uses entertaining GIFs as status controls: `office.gif` filters failed runs, `bounce-dwight.gif` filters running runs, and `great-job.gif` filters succeeded runs. It is currently inactive.
 

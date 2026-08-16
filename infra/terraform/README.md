@@ -38,7 +38,7 @@ The runner workflow registers a repository-scoped Linux runner with the built-in
 
 <img src="../../docs/assets/crazy-dance-funny-dance.gif" width="560" alt="Build celebration">
 
-The live-run pipeline tracker is retired for now. Its source is preserved for future use; review Terraform stages directly in the GitHub Actions run until it is reactivated.
+Use the [pipeline status board](../../docs/status-board.md) to expand the infrastructure run, review each Terraform stage, and open the full GitHub Actions log for failures.
 
 ## Pipeline GIF gallery
 

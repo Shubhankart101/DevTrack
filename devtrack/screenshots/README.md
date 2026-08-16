@@ -22,7 +22,7 @@ These should demonstrate:
 
 <img src="../../docs/assets/eyebrow-raise-dwight.gif" width="560" alt="Careful review">
 
-The live-run pipeline tracker is retired for now. Its source is preserved for future use; connect API screenshots to the workflow run directly in GitHub Actions until it is reactivated.
+Use the [pipeline status board](../../docs/status-board.md) to connect API screenshots with their workflow run. Expand a run to inspect test stages and open the full GitHub Actions log when a scenario fails.
 
 ## Project GIF gallery
 

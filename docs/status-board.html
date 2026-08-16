@@ -38,21 +38,18 @@
     input { width: min(360px, 100%); padding: 10px 12px; }
     button { padding: 10px 14px; cursor: pointer; }
     button:hover { border-color: var(--blue); background: var(--panel-strong); }
+    .status-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .status-filter.active { border-color: var(--blue); color: var(--text); background: #203654; }
     .summary { margin-bottom: 18px; }
     .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: #111d2d; }
     .chip strong { color: var(--text); }
-    .mood { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
-    .mood-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-    button.mood-card { width: 100%; padding: 0; text-align: left; cursor: pointer; }
-    button.mood-card.active { border-color: var(--blue); box-shadow: 0 0 0 2px #63b3ed33; }
-    .mood-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-    .mood-card p { margin: 0; padding: 10px 12px; color: var(--muted); font: 700 .78rem monospace; text-transform: uppercase; letter-spacing: .06em; }
     .reactions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
     .reaction { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #111d2d; }
     .reaction img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
     .reaction p { margin: 0; padding: 9px 10px; color: var(--muted); font-size: .82rem; }
     .runs { display: grid; gap: 12px; }
     .run { display: grid; grid-template-columns: 13px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #152235dd; }
+    .run-gif { display: block; width: 112px; height: 64px; margin-bottom: 10px; border-radius: 7px; object-fit: cover; }
     .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--muted); }
     .dot.success { background: var(--green); }
     .dot.failure { background: var(--red); }
@@ -81,7 +78,6 @@
     @media (max-width: 680px) {
       header { display: block; }
       .live { display: block; margin-top: 22px; }
-      .mood { grid-template-columns: 1fr; }
       .reactions { grid-template-columns: repeat(2, 1fr); }
       .run { grid-template-columns: 13px minmax(0, 1fr); }
       .state { grid-column: 2; }
@@ -106,12 +102,14 @@
       <button type="submit">Refresh runs</button>
     </form>
 
+    <nav class="status-filters" aria-label="Pipeline status filters">
+      <button type="button" class="status-filter" data-status-filter="all">All runs</button>
+      <button type="button" class="status-filter" data-status-filter="failure">Failed</button>
+      <button type="button" class="status-filter" data-status-filter="running">Running</button>
+      <button type="button" class="status-filter" data-status-filter="success">Succeeded</button>
+    </nav>
+
     <section id="summary" class="summary" aria-live="polite"></section>
-    <section class="mood" aria-label="Pipeline mood">
-      <button type="button" class="mood-card" data-filter="failure"><img src="assets/office.gif" alt="Office team reaction"><p>Failed: investigate the run</p></button>
-      <button type="button" class="mood-card" data-filter="running"><img src="assets/bounce-dwight.gif" alt="Dwight bouncing"><p>Running: checks in motion</p></button>
-      <button type="button" class="mood-card" data-filter="success"><img src="assets/great-job.gif" alt="Great job"><p>Succeeded: ship the good news</p></button>
-    </section>
     <section id="runs" class="runs" aria-live="polite"><div class="empty">Connecting to GitHub Actions...</div></section>
     <section class="reactions" aria-label="Pipeline reactions">
       <article class="reaction"><img src="assets/eyebrow-raise-dwight.gif" alt="Dwight raises an eyebrow"><p>Reviewing the diff</p></article>
@@ -135,6 +133,7 @@
     const formatDate = (value) => value ? new Date(value).toLocaleString() : 'Not started';
     const stateLabel = (run) => run.status === 'completed' ? (run.conclusion || 'completed') : run.status;
     const stateClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
+    const stateGif = (state) => state === 'success' ? 'assets/great-job.gif' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'assets/office.gif' : 'assets/bounce-dwight.gif';
     const params = new URLSearchParams(window.location.search);
     let activeFilter = params.get('status') || 'all';
     let latestPayload = null;
@@ -166,9 +165,21 @@
       }
       runs.innerHTML = filteredItems.map((run) => {
         const state = stateLabel(run);
-        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><button type="button" class="run-toggle" data-run-id="${escapeHtml(run.id)}" aria-expanded="false"><p class="name">${escapeHtml(run.name)}</p><p class="meta">Run #${escapeHtml(run.run_number)} · ${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p></button><a class="run-link" href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open GitHub run &#8599;</a></div><span class="state">${escapeHtml(state)}</span><div class="run-details" data-details-for="${escapeHtml(run.id)}" hidden></div></article>`;
+        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><img class="run-gif" src="${stateGif(state)}" alt="${escapeHtml(state)} pipeline reaction"><button type="button" class="run-toggle" data-run-id="${escapeHtml(run.id)}" aria-expanded="false"><p class="name">${escapeHtml(run.name)}</p><p class="meta">Run #${escapeHtml(run.run_number)} · ${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p></button><a class="run-link" href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open GitHub run &#8599;</a></div><span class="state">${escapeHtml(state)}</span><div class="run-details" data-details-for="${escapeHtml(run.id)}" hidden></div></article>`;
       }).join('');
     }
+
+    document.querySelectorAll('.status-filter').forEach((filterButton) => {
+      filterButton.classList.toggle('active', filterButton.dataset.statusFilter === activeFilter);
+      filterButton.addEventListener('click', () => {
+        activeFilter = filterButton.dataset.statusFilter;
+        const nextParams = new URLSearchParams(window.location.search);
+        nextParams.set('status', activeFilter);
+        window.history.replaceState({}, '', `${window.location.pathname}?${nextParams}`);
+        document.querySelectorAll('.status-filter').forEach((button) => button.classList.toggle('active', button === filterButton));
+        if (latestPayload) render(latestPayload);
+      });
+    });
 
     const jobState = (job) => job.conclusion || job.status || 'unknown';
     const stageClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
@@ -207,18 +218,6 @@
     runs.addEventListener('click', (event) => {
       const toggle = event.target.closest('.run-toggle');
       if (toggle) expandRun(toggle.dataset.runId, toggle);
-    });
-
-    document.querySelectorAll('.mood-card[data-filter]').forEach((card) => {
-      card.classList.toggle('active', card.dataset.filter === activeFilter);
-      card.addEventListener('click', () => {
-        activeFilter = card.dataset.filter;
-        const nextParams = new URLSearchParams(window.location.search);
-        nextParams.set('status', activeFilter);
-        window.history.replaceState({}, '', `${window.location.pathname}?${nextParams}`);
-        document.querySelectorAll('.mood-card[data-filter]').forEach((item) => item.classList.toggle('active', item === card));
-        if (latestPayload) render(latestPayload);
-      });
     });
 
     async function loadRuns() {

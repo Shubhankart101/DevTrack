@@ -9,21 +9,21 @@ This guide explains what should run for each kind of change in DevTrack, what ca
 | Python, Django, API, or test code | Pull-request tests and branch extended tests run | `app-deploy.yml` for a full build and deployment |
 | Only a `README.md` file | Automatic pull-request and push tests are skipped | Run a workflow manually if validation is still required |
 | Code plus a `README.md` file | Automatic tests run because the change includes code | Use the normal code workflow sequence |
-| `docs/status-board.html` or `docs/assets/` | Retired dashboard source remains preserved | Do not publish unless reactivating the tracker |
+| `docs/status-board.html`, `docs/index.html`, or `docs/assets/` | Published dashboard content | Run `publish-status-board.yml` manually to update Pages |
 | Terraform app infrastructure | No automatic infrastructure run | Run `azure-deploy.yml` with `plan` or `apply` |
 | Terraform runner infrastructure | No automatic infrastructure run | Run `runner-infra.yml` with `plan` or `apply` |
 | Workflow YAML changes | The changed workflow may not trigger itself | Run that workflow manually or make a small code change to exercise it |
 
 ## Pipeline map
 
-The active pipeline-runs dashboard is [GitHub Actions → DevTrack](https://github.com/Shubhankart101/DevTrack/actions). Use it to inspect workflow runs, stages, and logs. The custom live tracker remains retired and is not an active entrypoint.
+The active custom pipeline-runs dashboard is the [DevTrack GitHub Pages tracker](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack). The native [GitHub Actions dashboard](https://github.com/Shubhankart101/DevTrack/actions) remains available for full logs.
 
 - [Pull Request Tests](../.github/workflows/pull-request-tests.yml) runs Django checks and the complete test suite for pull requests targeting `main`.
 - [Extended Manual Tests](../.github/workflows/extended-tests.yml) runs on code-changing pushes, Saturdays at 12:00 PM IST, or manual dispatch.
 - [Build, Test, and Deploy](../.github/workflows/app-deploy.yml) is manual and compiles, checks, tests, and optionally deploys the app.
 - [Provision App Infrastructure](../.github/workflows/azure-deploy.yml) is manual and calls the reusable Terraform workflow for `infra/terraform`.
 - [Provision GitHub Runner Infrastructure](../.github/workflows/runner-infra.yml) is manual and calls the reusable Terraform workflow for `infra/terraform/runner`.
-- [Remove Published Pipeline Status Board](../.github/workflows/publish-status-board.yml) manually replaces the published tracker with an inactive placeholder.
+- [Publish Pipeline Status Board](../.github/workflows/publish-status-board.yml) manually publishes the tracker to GitHub Pages.
 
 ## Code changes
 
@@ -89,7 +89,7 @@ This means:
 - Manual dispatch and the scheduled extended test remain available.
 - A required pull-request status check can remain pending when GitHub skips a path-filtered workflow. If branch protection blocks a documentation-only PR, review the repository ruleset and use an appropriate documentation exemption or a manual check policy.
 
-Changes to `docs/status-board.html` or `docs/assets/` do not publish automatically. The retired dashboard source stays dormant until the workflow and Pages artifact are deliberately reactivated.
+Changes to `docs/status-board.html`, `docs/index.html`, or `docs/assets/` do not publish automatically. Run the Pages workflow manually when the dashboard files are ready.
 
 ## App build and deployment
 
@@ -173,15 +173,15 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Mitigation:** Check repository **Settings → Actions → Runners**, confirm the runner is online with the expected labels, and restart or reprovision the VM before rerunning app deployment.
 
-## GitHub Pages status board (retired)
+## GitHub Pages status board
 
-### Deactivation workflow fails at `configure-pages`
+### Publisher fails at `configure-pages`
 
 **Cause:** GitHub Pages has not been enabled for the repository, or its source is not set to GitHub Actions. The default `GITHUB_TOKEN` cannot create the Pages site.
 
 **Mitigation:** Open **Settings → Pages**, select **GitHub Actions** as the source, save, and rerun [publish-status-board.yml](../.github/workflows/publish-status-board.yml).
 
-### Deactivation workflow fails at artifact upload or deployment
+### Publisher fails at artifact upload or deployment
 
 **Likely causes:** Missing `docs/index.html`, missing `docs/status-board.html`, an invalid asset path, or Pages permissions/policy restrictions.
 
@@ -205,11 +205,11 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Mitigation:** Open the run's **Open GitHub log** link, confirm the repository is public or use a secure proxy, wait for an in-progress run to create job data, and inspect the browser developer tools for the jobs API response. Completed runs show each job step and identify the first failed stage when GitHub returns step conclusions.
 
-### Dashboard stops updating after a merge
+### Dashboard stops updating
 
 <img src="assets/great-job.gif" width="560" alt="Great job"><br>Republish after confirming the dashboard files are ready.
 
-**Mitigation when reactivated:** Check the latest deactivation run in **Actions**. Use **Run workflow** to replace the published tracker with the inactive placeholder. If the run failed, fix the reported step and rerun it.
+**Mitigation:** Check the latest **Publish Pipeline Status Board** run in **Actions**. Use **Run workflow** after dashboard changes are ready to publish. If the run failed, fix the reported step and rerun it.
 
 ## Local verification checklist
 
