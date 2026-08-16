@@ -10,7 +10,7 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <p align="center"><a href="https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack">Open the all-branches live status board</a> · <a href="https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main">Open the main-branch live status board</a></p>
 
-<p align="center"><sub>The live board republishes automatically when tracker or GIF changes merge into <code>main</code>.</sub></p>
+<p align="center"><sub>Start the status-board publisher manually after tracker or GIF changes merge into <code>main</code>.</sub></p>
 
 ## The DevTrack lifecycle
 
@@ -106,6 +106,7 @@ The `main` branch should require the pull-request test job as a branch protectio
 | Local setup & troubleshooting | [docs/setup.md](docs/setup.md) |
 | API reference & examples | [docs/api.md](docs/api.md) |
 | Deployment, pipelines & secrets | [docs/deployment.md](docs/deployment.md) |
+| Pipeline troubleshooting & mitigation | [docs/README.md](docs/README.md) |
 | Architecture, data model & validation | [docs/architecture.md](docs/architecture.md) |
 
 ## Until the next issue

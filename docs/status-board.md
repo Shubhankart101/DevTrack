@@ -2,6 +2,18 @@
 
 The pipeline boards are standalone HTML pages. They do not use Django, Terraform, or a local API server. The page calls the GitHub Actions API from the browser and refreshes every 15 seconds.
 
+## Dashboard mood
+
+Use the GIF cards in the dashboard as live status filters:
+
+<img src="assets/office.gif" width="560" alt="Office team reaction"><br>**Failed runs** need investigation.
+
+<img src="assets/bounce-dwight.gif" width="560" alt="Dwight bouncing"><br>**Running runs** are still in motion.
+
+<img src="assets/great-job.gif" width="560" alt="Great job"><br>**Succeeded runs** are ready to celebrate.
+
+The dashboard also includes reaction GIFs for code review, deployment celebration, unexpected results, debugging, and team reactions.
+
 Automatic test workflows ignore commits that change only a `README.md` file. Code changes still trigger the workflows, and a commit containing both code and README changes also triggers them. Manual dispatch and scheduled runs are unaffected.
 
 ## Prerequisites
@@ -77,8 +89,22 @@ The browser calls GitHub directly without exposing a token. This works for publi
 
 ## GitHub Pages
 
-The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. After that one-time setup, it publishes automatically when the board or its GIF assets merge into `main`, and it can also be run manually. Use the published URL instead of the relative HTML source link:
+The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. After that one-time setup, start the publisher manually whenever the board or its GIF assets are ready. Use the published URL instead of the relative HTML source link:
 
 ```text
 https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main
 ```
+
+## If the dashboard stops
+
+The dashboard is a static Pages site. It does not run as a permanent local process or server; GitHub Pages serves the published files, while the browser polls GitHub Actions.
+
+If the published dashboard stops updating:
+
+1. Open the repository's **Actions** tab and inspect the latest **Publish Pipeline Status Board** run.
+2. If the run failed at `configure-pages`, open **Settings → Pages** and set the source to **GitHub Actions**.
+3. If the run failed during upload or deployment, rerun the failed workflow after checking the log.
+4. If the site root returns 404, confirm that `docs/index.html` is included in the published artifact and rerun the workflow.
+5. Check the GitHub Actions API response in the browser developer tools if the page loads but the run list is stale.
+
+The publisher is manual-only. Start it after `docs/status-board.html`, `docs/index.html`, or `docs/assets/` changes are merged into `main` and ready to publish.

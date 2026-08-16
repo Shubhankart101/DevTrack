@@ -2,14 +2,6 @@ name: Publish Pipeline Status Board
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - docs/index.html
-      - docs/status-board.html
-      - docs/assets/**
-      - .github/workflows/publish-status-board.yml
 
 permissions:
   contents: read

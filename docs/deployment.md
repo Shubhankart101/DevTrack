@@ -1,6 +1,6 @@
 # Deployment
 
-Application CI has two merge/build workflows plus an extended manual test workflow. Pull requests targeting `main` run tests automatically; the build, test, and deployment workflow and the extended test workflow are started manually. Infrastructure workflows remain manual.
+Application CI has two merge/build workflows plus an extended manual test workflow. Pull requests targeting `main` run tests automatically; the build, test, and deployment workflow and the extended test workflow are started manually. Infrastructure workflows remain manual. See [README.md](README.md) for pipeline failure modes and mitigations.
 
 ## Application pipelines
 
@@ -26,7 +26,7 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 | Workflow | Purpose |
 | --- | --- |
-| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Publish the standalone GitHub Actions status board to GitHub Pages after merges to `main` or manually |
+| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually publish the standalone GitHub Actions status board to GitHub Pages |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
@@ -35,6 +35,14 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub. Use [status-board.md](status-board.md) for the complete local setup and branch-specific URLs.
 
+The dashboard uses entertaining GIFs as status controls: `office.gif` filters failed runs, `bounce-dwight.gif` filters running runs, and `great-job.gif` filters succeeded runs. Additional reaction GIFs appear alongside review, deployment, debugging, and unexpected-result states.
+
+<img src="assets/office.gif" width="560" alt="Office team reaction"><br>Failed pipeline: investigate the run.
+
+<img src="assets/bounce-dwight.gif" width="560" alt="Dwight bouncing"><br>Running pipeline: checks are in motion.
+
+<img src="assets/great-job.gif" width="560" alt="Great job"><br>Succeeded pipeline: ready to celebrate.
+
 The two published live views are:
 
 - [All branches](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack)
@@ -42,9 +50,13 @@ The two published live views are:
 
 The relative [status-board.html](status-board.html) link is for local development; the published links above open the live board instead of GitHub's source-file viewer.
 
-Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token.
+Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. Run the publisher manually whenever the dashboard HTML, root index, or GIF assets change.
 
-Enable GitHub Pages with **GitHub Actions** as the source. The board publishes automatically when status-board files or GIF assets merge into `main`, and can also be started manually. It will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
+Enable GitHub Pages with **GitHub Actions** as the source. The board publishes when `publish-status-board.yml` is started manually. It will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
+
+### Dashboard recovery
+
+If the dashboard stops updating, inspect the latest **Publish Pipeline Status Board** run in **Actions** and rerun it after fixing the reported step. A `configure-pages` failure means Pages is not enabled with **GitHub Actions** as its source. A root 404 means the published artifact is missing `docs/index.html`; rerun the publisher after confirming that file is present.
 
 ## Recommended order
 
