@@ -1,15 +1,23 @@
 # Deployment
 
-Application CI has two workflows. Pull requests targeting `master` run tests automatically; the build, test, and deployment workflow is started manually. Infrastructure workflows remain manual.
+Application CI has two workflows. Pull requests targeting `main` run tests automatically; the build, test, and deployment workflow is started manually. Infrastructure workflows remain manual.
 
 ## Application pipelines
 
 | Workflow | Purpose |
 | --- | --- |
-| [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `master` |
+| [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |
 | [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via the self-hosted runner |
 
-The pull-request workflow runs on opened, reopened, and updated pull requests targeting `master`. Configure its required status check in the `master` branch protection rules so a pull request cannot be merged until the test job passes.
+The pull-request workflow runs on opened, reopened, and updated pull requests targeting `main`. Configure the `main` branch protection rules with these settings:
+
+- Require a pull request before merging.
+- Require the `Pull Request Tests / test` status check to pass.
+- Require branches to be up to date before merging.
+- Restrict direct pushes and force pushes to `main` to repository administrators only.
+- Do not allow bypassing the pull-request requirement for normal contributors.
+
+In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`, enable the settings above, and set the ruleset to **Active**. This repository configuration is required to technically block direct commits; the workflow alone can only run the pre-merge checks.
 
 ## Infrastructure pipelines
 

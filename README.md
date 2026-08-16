@@ -37,10 +37,10 @@ The repository has two application workflows:
 
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
-| [Pull Request Tests](.github/workflows/pull-request-tests.yml) | Automatically on pull requests targeting `master` | Runs Django checks and the complete app test suite before merge |
+| [Pull Request Tests](.github/workflows/pull-request-tests.yml) | Automatically on pull requests targeting `main` | Runs Django checks and the complete app test suite before merge |
 | [Build, Test, and Deploy](.github/workflows/app-deploy.yml) | Manually from GitHub Actions | Compiles, checks, and tests the app, then optionally deploys it |
 
-The `master` branch should require the pull-request test job as a branch protection status check. Infrastructure workflows are documented separately in [docs/deployment.md](docs/deployment.md).
+The `main` branch should require the pull-request test job as a branch protection status check and disallow direct pushes. Infrastructure workflows are documented separately in [docs/deployment.md](docs/deployment.md).
 
 ## Documentation
 
