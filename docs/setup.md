@@ -34,16 +34,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run startup checks
+### 4. Run startup checks and tests
 
 ```bash
-python manage.py check
+python devtrack/manage.py check
+python devtrack/manage.py test issues
 ```
 
 ### 5. Start the development server
 
 ```bash
-python manage.py runserver
+python devtrack/manage.py runserver
 ```
 
 The API is available at `http://127.0.0.1:8000/api/`.
@@ -51,5 +52,5 @@ The API is available at `http://127.0.0.1:8000/api/`.
 ## Troubleshooting
 
 1. Confirm Python and Django are installed in the active environment.
-2. Run `python manage.py check` and review the output.
-3. Ensure you are in the directory that contains `manage.py`.
+2. Run `python devtrack/manage.py check` and `python devtrack/manage.py test issues`.
+3. Run management commands from the repository root, where the `devtrack` directory contains `manage.py`.

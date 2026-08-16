@@ -55,7 +55,10 @@ def api_root(request):
 def reporters_view(request):
     if request.method == 'GET':
         reporters = load_json_file(REPORTERS_FILE)
-        reporter_id = _safe_int(request.GET.get('id'))
+        reporter_id_param = request.GET.get('id')
+        reporter_id = _safe_int(reporter_id_param)
+        if reporter_id_param is not None and reporter_id is None:
+            return JsonResponse({'error': 'Invalid id'}, status=400)
         if reporter_id is not None:
             reporter = _find_by_id(reporters, reporter_id)
             if not reporter:
@@ -68,6 +71,8 @@ def reporters_view(request):
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        if not isinstance(data, dict):
+            return JsonResponse({'error': 'JSON object required'}, status=400)
 
         reporter = Reporter(
             id=data.get('id'),
@@ -94,7 +99,10 @@ def reporters_view(request):
 @csrf_exempt
 def issues_view(request):
     if request.method == 'GET':
-        issue_id = _safe_int(request.GET.get('id'))
+        issue_id_param = request.GET.get('id')
+        issue_id = _safe_int(issue_id_param)
+        if issue_id_param is not None and issue_id is None:
+            return JsonResponse({'error': 'Invalid id'}, status=400)
         status_filter = request.GET.get('status')
         if issue_id is not None:
             issue = get_issue(request)
@@ -113,6 +121,8 @@ def issues_view(request):
             data = json.loads(request.body)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        if not isinstance(data, dict):
+            return JsonResponse({'error': 'JSON object required'}, status=400)
 
         priority = data.get('priority')
         issue_cls = Issue

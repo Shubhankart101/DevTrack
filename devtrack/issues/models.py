@@ -29,7 +29,7 @@ class Reporter(BaseEntity):
     def validate(self):
         if not self.name:
             raise ValueError('Name cannot be empty')
-        if '@' not in self.email or '.' not in self.email:
+        if not isinstance(self.email, str) or '@' not in self.email or '.' not in self.email:
             raise ValueError('Invalid email')
 
 class Issue(BaseEntity):

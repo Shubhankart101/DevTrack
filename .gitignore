@@ -17,6 +17,10 @@ dist/
 
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.pyright/
+.tox/
+test_*.sqlite3
 
 db.sqlite3
 db.sqlite3-journal

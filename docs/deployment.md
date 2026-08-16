@@ -1,14 +1,22 @@
 # Deployment
 
-All pipelines are `workflow_dispatch` only — nothing runs automatically.
+Application CI has two workflows. Pull requests targeting `master` run tests automatically; the build, test, and deployment workflow is started manually. Infrastructure workflows remain manual.
 
-## Pipelines
+## Application pipelines
+
+| Workflow | Purpose |
+| --- | --- |
+| [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `master` |
+| [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via the self-hosted runner |
+
+The pull-request workflow runs on opened, reopened, and updated pull requests targeting `master`. Configure its required status check in the `master` branch protection rules so a pull request cannot be merged until the test job passes.
+
+## Infrastructure pipelines
 
 | Workflow | Purpose |
 | --- | --- |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
-| [app-deploy.yml](../.github/workflows/app-deploy.yml) | Build and deploy the Django app via the self-hosted runner |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
 
 ## Recommended order
@@ -16,7 +24,19 @@ All pipelines are `workflow_dispatch` only — nothing runs automatically.
 1. Run **runner-infra** with `terraform_action=apply`.
 2. Confirm the runner is online in Actions → Runners in the repository settings.
 3. Run **azure-deploy** with `terraform_action=apply`.
-4. Run **app-deploy** to deploy the Django application.
+4. Run **app-deploy** manually to build, test, and deploy the Django application.
+
+## Test commands
+
+From the repository root, install dependencies and run the same checks used by both application pipelines:
+
+```bash
+pip install -r requirements.txt
+python devtrack/manage.py check
+python devtrack/manage.py test issues
+```
+
+The test suite is located at `devtrack/issues/tests.py` and uses temporary JSON files, so it does not modify the development fixtures.
 
 ## Self-hosted runner
 

@@ -1,4 +1,4 @@
-name: Deploy Django App
+name: Build, Test, and Deploy Django App
 
 on:
   workflow_dispatch:
@@ -37,9 +37,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Build Python source
+        run: python -m compileall -q devtrack
+
       - name: Run Django checks
-        run: |
-          python manage.py check
+        run: python devtrack/manage.py check
+
+      - name: Run test cases
+        run: python devtrack/manage.py test issues
 
       - name: Deploy to Azure Web App
         if: ${{ env.AZURE_WEBAPP_NAME != '' }}
