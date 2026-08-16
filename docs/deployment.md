@@ -42,6 +42,8 @@ The two published live views are:
 
 The relative [status-board.html](status-board.html) link is for local development; the published links above open the live board instead of GitHub's source-file viewer.
 
+Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token.
+
 Enable GitHub Pages with **GitHub Actions** as the source. The board publishes automatically when status-board files or GIF assets merge into `main`, and can also be started manually. It will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
 
 ## Recommended order

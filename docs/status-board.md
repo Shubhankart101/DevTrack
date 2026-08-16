@@ -77,7 +77,7 @@ The browser calls GitHub directly without exposing a token. This works for publi
 
 ## GitHub Pages
 
-The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). After GitHub Pages is configured to use GitHub Actions, it publishes automatically when the board or its GIF assets merge into `main`, and it can also be run manually. Use the published URL instead of the relative HTML source link:
+The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. After that one-time setup, it publishes automatically when the board or its GIF assets merge into `main`, and it can also be run manually. Use the published URL instead of the relative HTML source link:
 
 ```text
 https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main
