@@ -41,6 +41,12 @@
     .summary { margin-bottom: 18px; }
     .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: #111d2d; }
     .chip strong { color: var(--text); }
+    .mood { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+    .mood-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    button.mood-card { width: 100%; padding: 0; text-align: left; cursor: pointer; }
+    button.mood-card.active { border-color: var(--blue); box-shadow: 0 0 0 2px #63b3ed33; }
+    .mood-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+    .mood-card p { margin: 0; padding: 10px 12px; color: var(--muted); font: 700 .78rem monospace; text-transform: uppercase; letter-spacing: .06em; }
     .runs { display: grid; gap: 12px; }
     .run { display: grid; grid-template-columns: 13px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #152235dd; }
     .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--muted); }
@@ -58,6 +64,7 @@
     @media (max-width: 680px) {
       header { display: block; }
       .live { display: block; margin-top: 22px; }
+      .mood { grid-template-columns: 1fr; }
       .run { grid-template-columns: 13px minmax(0, 1fr); }
       .state { grid-column: 2; }
     }
@@ -82,6 +89,11 @@
     </form>
 
     <section id="summary" class="summary" aria-live="polite"></section>
+    <section class="mood" aria-label="Pipeline mood">
+      <button type="button" class="mood-card" data-filter="failure"><img src="assets/office.gif" alt="Office team reaction"><p>Failed: investigate the run</p></button>
+      <button type="button" class="mood-card" data-filter="running"><img src="assets/bounce-dwight.gif" alt="Dwight bouncing"><p>Running: checks in motion</p></button>
+      <button type="button" class="mood-card" data-filter="success"><img src="assets/great-job.gif" alt="Great job"><p>Succeeded: ship the good news</p></button>
+    </section>
     <section id="runs" class="runs" aria-live="polite"><div class="empty">Connecting to GitHub Actions...</div></section>
   </main>
 
@@ -96,27 +108,51 @@
     const stateLabel = (run) => run.status === 'completed' ? (run.conclusion || 'completed') : run.status;
     const stateClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
     const params = new URLSearchParams(window.location.search);
+    let activeFilter = params.get('status') || 'all';
+    let latestPayload = null;
     repositoryInput.value = params.get('repo') || repositoryInput.value;
     branchInput.value = params.get('branch') || '';
 
+    const matchesFilter = (run, filter) => {
+      const state = stateLabel(run);
+      if (filter === 'running') return run.status === 'in_progress';
+      if (filter === 'success') return state === 'success';
+      if (filter === 'failure') return ['failure', 'cancelled', 'timed_out'].includes(state);
+      return true;
+    };
+
     function render(payload) {
+      latestPayload = payload;
       const items = payload.workflow_runs || [];
+      const filteredItems = items.filter((item) => matchesFilter(item, activeFilter));
       const counts = items.reduce((result, item) => {
         const state = stateLabel(item);
         result[state] = (result[state] || 0) + 1;
         return result;
       }, {});
       const branchLabel = payload.branch || 'all branches';
-      summary.innerHTML = `<span class="chip"><strong>${items.length}</strong> recent runs</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Branch <strong>${escapeHtml(branchLabel)}</strong></span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
-      if (!items.length) {
-        runs.innerHTML = '<div class="empty">No workflow runs found for this repository.</div>';
+      summary.innerHTML = `<span class="chip"><strong>${filteredItems.length}</strong> ${activeFilter === 'all' ? 'recent runs' : `${escapeHtml(activeFilter)} runs`}</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Branch <strong>${escapeHtml(branchLabel)}</strong></span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
+      if (!filteredItems.length) {
+        runs.innerHTML = `<div class="empty">No ${activeFilter === 'all' ? '' : `${escapeHtml(activeFilter)} `}workflow runs found for this repository.</div>`;
         return;
       }
-      runs.innerHTML = items.map((run) => {
+      runs.innerHTML = filteredItems.map((run) => {
         const state = stateLabel(run);
         return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><p class="name"><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">${escapeHtml(run.name)}</a></p><p class="meta">${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p></div><span class="state">${escapeHtml(state)}</span></article>`;
       }).join('');
     }
+
+    document.querySelectorAll('.mood-card[data-filter]').forEach((card) => {
+      card.classList.toggle('active', card.dataset.filter === activeFilter);
+      card.addEventListener('click', () => {
+        activeFilter = card.dataset.filter;
+        const nextParams = new URLSearchParams(window.location.search);
+        nextParams.set('status', activeFilter);
+        window.history.replaceState({}, '', `${window.location.pathname}?${nextParams}`);
+        document.querySelectorAll('.mood-card[data-filter]').forEach((item) => item.classList.toggle('active', item === card));
+        if (latestPayload) render(latestPayload);
+      });
+    });
 
     async function loadRuns() {
       const repository = repositoryInput.value.trim();

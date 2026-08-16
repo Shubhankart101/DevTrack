@@ -40,6 +40,22 @@ http://127.0.0.1:8000/status-board.html?repo=OWNER%2FREPOSITORY&branch=BRANCH_NA
 
 You can also change the repository and branch in the page controls and select **Refresh runs**. The URL updates automatically.
 
+## Filter with the GIF controls
+
+The entertaining GIF cards are live filters:
+
+- Failed runs: `?status=failure`
+- Running runs: `?status=running`
+- Succeeded runs: `?status=success`
+
+For example, the succeeded `main` view is:
+
+```text
+http://127.0.0.1:8000/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main&status=success
+```
+
+Selecting a GIF updates the URL, so filtered boards can be bookmarked or shared locally.
+
 ## What the board shows
 
 - Recent workflow runs from GitHub Actions
