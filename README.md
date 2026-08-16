@@ -2,6 +2,8 @@
 
 DevTrack is a minimal Django backend API for tracking engineering issues. It supports reporter creation, issue filing, issue status filtering, and JSON-based persistence.
 
+![DevTrack code loop](docs/assets/devtrack-code-loop.gif)
+
 ## Contents
 
 | Section | Description |

@@ -1,5 +1,7 @@
 # Local development setup
 
+![DevTrack code loop](assets/devtrack-code-loop.gif)
+
 ## Prerequisites
 
 - Python 3.11 or newer
