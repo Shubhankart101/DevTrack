@@ -38,7 +38,7 @@ The runner workflow registers a repository-scoped Linux runner with the built-in
 
 <img src="../../docs/assets/crazy-dance-funny-dance.gif" width="560" alt="Build celebration">
 
-Use the [pipeline status board](../../docs/status-board.md) to expand the infrastructure run, review each Terraform stage, and open the full GitHub Actions log for failures.
+Use the [pipeline status board](../../docs/status-board.md) to expand the infrastructure run, click each Terraform stage to load its inline log, and open the full GitHub job log for failures.
 
 ## Pipeline GIF gallery
 

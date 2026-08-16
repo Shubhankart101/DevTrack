@@ -22,7 +22,7 @@ These should demonstrate:
 
 <img src="../../docs/assets/eyebrow-raise-dwight.gif" width="560" alt="Careful review">
 
-Use the [pipeline status board](../../docs/status-board.md) to connect API screenshots with their workflow run. Expand a run to inspect test stages and open the full GitHub Actions log when a scenario fails.
+Use the [pipeline status board](../../docs/status-board.md) to connect API screenshots with their workflow run. Expand a run, click a test stage to load its inline log, and open the full GitHub job log when a scenario fails.
 
 ## Project GIF gallery
 

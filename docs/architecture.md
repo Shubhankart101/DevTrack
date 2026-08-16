@@ -54,4 +54,4 @@ JSON file persistence is used in place of a relational database:
 
 ## Operational visibility
 
-The standalone [pipeline status board](status-board.md) connects directly to GitHub Actions. Each run expands into job and step status, identifies failed stages when available, and links to the complete GitHub log.
+The standalone [pipeline status board](status-board.md) connects directly to GitHub Actions. Each run expands into job and step status; clicking a stage loads its inline log, identifies failures when available, and links to the complete GitHub job log.

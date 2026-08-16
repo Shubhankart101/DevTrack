@@ -62,8 +62,12 @@
     .run-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
     .run-details { grid-column: 2 / -1; padding-top: 14px; border-top: 1px solid var(--line); }
     .stage-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
-    .stage { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
+    .stage { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
     .stage-gif { width: 96px; height: 54px; border-radius: 6px; object-fit: cover; flex: 0 0 auto; }
+    .stage-toggle { display: flex; align-items: center; gap: 12px; width: 100%; padding: 0; border: 0; color: inherit; text-align: left; background: transparent; }
+    .stage-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    .stage-log { grid-column: 1 / -1; padding: 12px; border-top: 1px solid var(--line); }
+    .stage-log pre { max-height: 280px; margin: 0; overflow: auto; white-space: pre-wrap; color: #d1d5db; font: .78rem/1.45 Consolas, monospace; }
     .stage-name { color: var(--text); }
     .stage-state { color: var(--muted); font: 700 .74rem monospace; text-transform: uppercase; }
     .stage-state.success { color: var(--green); }
@@ -208,9 +212,13 @@
         const failedJob = jobs.find((job) => ['failure', 'cancelled', 'timed_out'].includes(jobState(job)) || (job.steps || []).some((step) => step.conclusion === 'failure'));
         const failedStep = failedJob?.steps?.find((step) => step.conclusion === 'failure');
         const failureNote = failedStep ? `<p class="failure-note">Failed stage: ${escapeHtml(failedJob.name)} / ${escapeHtml(failedStep.name)}</p>` : '';
-        const stages = jobs.flatMap((job) => (job.steps || []).map((step) => ({ name: `${job.name} / ${step.name}`, state: step.conclusion || step.status || 'unknown' })));
-        const fallbackStages = jobs.map((job) => ({ name: job.name, state: jobState(job) }));
-        const renderedStages = (stages.length ? stages : fallbackStages).map((stage, index) => `<li class="stage"><img class="stage-gif" src="${stageGifs[index % stageGifs.length]}" alt="Pipeline stage reaction"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></li>`).join('');
+        const stages = jobs.flatMap((job) => (job.steps || []).map((step) => ({ jobId: job.id, jobUrl: job.html_url, name: `${job.name} / ${step.name}`, state: step.conclusion || step.status || 'unknown' })));
+        const fallbackStages = jobs.map((job) => ({ jobId: job.id, jobUrl: job.html_url, name: job.name, state: jobState(job) }));
+        const stageItems = stages.length ? stages : fallbackStages;
+        const renderedStages = stageItems.map((stage, index) => {
+          const logKey = `${runId}-${index}`;
+          return `<li class="stage"><button type="button" class="stage-toggle" data-job-id="${escapeHtml(stage.jobId)}" data-log-key="${escapeHtml(logKey)}" data-job-url="${escapeHtml(stage.jobUrl || run.html_url)}"><img class="stage-gif" src="${stageGifs[index % stageGifs.length]}" alt="Pipeline stage reaction"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></button><div class="stage-log" data-log-for="${escapeHtml(logKey)}" hidden></div></li>`;
+        }).join('');
         details.innerHTML = `${failureNote}<ul class="stage-list">${renderedStages || '<li class="stage"><span class="stage-name">No job stages returned</span><span class="stage-state pending">unknown</span></li>'}</ul><p class="details-note">Stage status comes from GitHub Actions. <a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open the full GitHub log &#8599;</a></p>`;
         details.dataset.loaded = 'true';
       } catch (error) {
@@ -218,7 +226,34 @@
       }
     }
 
+    async function expandStageLog(toggle) {
+      const logPanel = document.querySelector(`[data-log-for="${CSS.escape(toggle.dataset.logKey)}"]`);
+      if (!logPanel) return;
+      const isOpen = !logPanel.hidden;
+      logPanel.hidden = isOpen;
+      if (isOpen || logPanel.dataset.loaded === 'true') return;
+      logPanel.hidden = false;
+      logPanel.innerHTML = '<p class="details-note">Loading stage log...</p>';
+      const repository = repositoryInput.value.trim().split('/');
+      try {
+        const logsUrl = `https://api.github.com/repos/${encodeURIComponent(repository[0])}/${encodeURIComponent(repository[1])}/actions/jobs/${encodeURIComponent(toggle.dataset.jobId)}/logs`;
+        const response = await fetch(logsUrl, { headers: { Accept: 'text/plain, application/vnd.github+json' } });
+        if (!response.ok) throw new Error(`GitHub returned ${response.status} for this stage log.`);
+        const logText = await response.text();
+        const excerpt = logText.length > 12000 ? `${logText.slice(-12000)}\n\n[Log truncated to the latest 12,000 characters]` : logText;
+        logPanel.innerHTML = `<pre>${escapeHtml(excerpt || 'No log output was returned for this stage.')}</pre><p class="details-note"><a href="${escapeHtml(toggle.dataset.jobUrl)}" target="_blank" rel="noreferrer">Open the GitHub job &#8599;</a></p>`;
+        logPanel.dataset.loaded = 'true';
+      } catch (error) {
+        logPanel.innerHTML = `<p class="details-note">${escapeHtml(error.message)} <a href="${escapeHtml(toggle.dataset.jobUrl)}" target="_blank" rel="noreferrer">Open the GitHub job log &#8599;</a></p>`;
+      }
+    }
+
     runs.addEventListener('click', (event) => {
+      const stageToggle = event.target.closest('.stage-toggle');
+      if (stageToggle) {
+        expandStageLog(stageToggle);
+        return;
+      }
       const toggle = event.target.closest('.run-toggle');
       if (toggle) expandRun(toggle.dataset.runId, toggle);
     });

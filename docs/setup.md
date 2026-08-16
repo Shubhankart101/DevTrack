@@ -51,7 +51,7 @@ python devtrack/manage.py runserver
 
 The API is available at `http://127.0.0.1:8000/api/`.
 
-For live pipeline visibility, follow [status-board.md](status-board.md) to start the standalone board. Click a run to expand its stages and open the corresponding GitHub log.
+For live pipeline visibility, follow [status-board.md](status-board.md) to start the standalone board. Click a run to expand its stages, then click a stage to load its inline log or open the corresponding GitHub job log.
 
 ## Troubleshooting
 

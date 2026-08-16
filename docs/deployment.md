@@ -45,13 +45,13 @@ The preserved dashboard code uses entertaining GIFs as status controls: `office.
 
 <img src="assets/great-job.gif" width="560" alt="Great job"><br>Succeeded pipeline: ready to celebrate.
 
-The relative [status-board.html](status-board.html) file is preserved for future local use. Running `publish-status-board.yml` manually uploads only `docs/pages-disabled` and removes the tracker from the published Pages artifact.
+The [status-board.html](status-board.html) dashboard is published through GitHub Pages and can also be run locally. Click a run to expand its stages, then click a stage to load its inline log.
 
-Before running the removal workflow, ensure GitHub Pages is configured with **GitHub Actions** as the source. The default repository token cannot create the Pages site, but it can deploy the inactive placeholder after Pages is enabled.
+Before running the publisher, ensure GitHub Pages is configured with **GitHub Actions** as the source. The default repository token cannot create the Pages site. If raw stage logs are restricted in the browser, use the direct GitHub job-log link.
 
 ### Dashboard recovery
 
-If the removal workflow fails, inspect the latest **Remove Published Pipeline Status Board** run in **Actions** and rerun it after fixing the reported step. A `configure-pages` failure means Pages is not enabled with **GitHub Actions** as its source.
+If the publisher fails, inspect the latest **Publish Pipeline Status Board** run in **Actions** and rerun it after fixing the reported step. A `configure-pages` failure means Pages is not enabled with **GitHub Actions** as its source.
 
 ## Recommended order
 

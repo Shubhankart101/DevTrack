@@ -85,6 +85,8 @@ The `main` branch should require the pull-request test job as a branch protectio
 
 Use the [pipeline troubleshooting guide](docs/README.md) when a run is skipped or fails. The live-run tracker dashboard is available through GitHub Pages.
 
+Click a pipeline run to expand it, then click an individual stage to view its inline log or open the full GitHub job log.
+
 ## Documentation
 
 | Topic | File |

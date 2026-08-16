@@ -203,7 +203,7 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Likely causes:** GitHub API rate limiting, a private repository without authenticated access, missing job permissions, or a workflow that has not created job step data yet.
 
-**Mitigation:** Open the run's **Open GitHub log** link, confirm the repository is public or use a secure proxy, wait for an in-progress run to create job data, and inspect the browser developer tools for the jobs API response. Completed runs show each job step and identify the first failed stage when GitHub returns step conclusions.
+**Mitigation:** Expand the run, click the individual stage to load its inline log, and use **Open the GitHub job log** if raw browser access is restricted. Confirm the repository is public or use a secure proxy, wait for an in-progress run to create job data, and inspect the browser developer tools for the jobs API response.
 
 ### Dashboard stops updating
 
