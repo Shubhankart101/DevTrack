@@ -1,6 +1,6 @@
-# Local pipeline status boards
+# Local pipeline status boards (inactive)
 
-The pipeline boards are standalone HTML pages. They do not use Django, Terraform, or a local API server. The page calls the GitHub Actions API from the browser and refreshes every 15 seconds.
+The pipeline board implementation is retained in `status-board.html` for future use but is currently inactive. It is not linked from the root README or served as the default Pages entrypoint. Running [publish-status-board.yml](../.github/workflows/publish-status-board.yml) replaces the published site with an inactive placeholder instead of publishing this board.
 
 ## Dashboard mood
 
@@ -76,6 +76,7 @@ Selecting a GIF updates the URL, so filtered boards can be bookmarked or shared 
 - Running, queued, passed, failed, and cancelled states
 - Branch, actor, creation time, and a link to the GitHub run
 - Run number and an explicit **Open GitHub run** link on every result
+- Click any run to expand its job stages and identify the exact failed stage when GitHub exposes step data
 - Counts for recent, running, passed, and failed runs
 - Automatic refresh every 15 seconds
 

@@ -1,4 +1,4 @@
-name: Publish Pipeline Status Board
+name: Remove Published Pipeline Status Board
 
 on:
   workflow_dispatch:
@@ -24,8 +24,8 @@ jobs:
       - name: Upload status board
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: docs/pages-disabled
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy deactivation page to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

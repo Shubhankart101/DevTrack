@@ -9,7 +9,7 @@ This guide explains what should run for each kind of change in DevTrack, what ca
 | Python, Django, API, or test code | Pull-request tests and branch extended tests run | `app-deploy.yml` for a full build and deployment |
 | Only a `README.md` file | Automatic pull-request and push tests are skipped | Run a workflow manually if validation is still required |
 | Code plus a `README.md` file | Automatic tests run because the change includes code | Use the normal code workflow sequence |
-| `docs/status-board.html`, `docs/index.html`, or `docs/assets/` | No automatic publisher run | Run `publish-status-board.yml` manually |
+| `docs/status-board.html` or `docs/assets/` | Retired dashboard source remains preserved | Do not publish unless reactivating the tracker |
 | Terraform app infrastructure | No automatic infrastructure run | Run `azure-deploy.yml` with `plan` or `apply` |
 | Terraform runner infrastructure | No automatic infrastructure run | Run `runner-infra.yml` with `plan` or `apply` |
 | Workflow YAML changes | The changed workflow may not trigger itself | Run that workflow manually or make a small code change to exercise it |
@@ -21,7 +21,7 @@ This guide explains what should run for each kind of change in DevTrack, what ca
 - [Build, Test, and Deploy](../.github/workflows/app-deploy.yml) is manual and compiles, checks, tests, and optionally deploys the app.
 - [Provision App Infrastructure](../.github/workflows/azure-deploy.yml) is manual and calls the reusable Terraform workflow for `infra/terraform`.
 - [Provision GitHub Runner Infrastructure](../.github/workflows/runner-infra.yml) is manual and calls the reusable Terraform workflow for `infra/terraform/runner`.
-- [Publish Pipeline Status Board](../.github/workflows/publish-status-board.yml) manually publishes the static tracker to GitHub Pages.
+- [Remove Published Pipeline Status Board](../.github/workflows/publish-status-board.yml) manually replaces the published tracker with an inactive placeholder.
 
 ## Code changes
 
@@ -87,7 +87,7 @@ This means:
 - Manual dispatch and the scheduled extended test remain available.
 - A required pull-request status check can remain pending when GitHub skips a path-filtered workflow. If branch protection blocks a documentation-only PR, review the repository ruleset and use an appropriate documentation exemption or a manual check policy.
 
-Changes to `docs/status-board.html`, `docs/index.html`, or `docs/assets/` do not publish automatically. Run the Pages workflow manually when the dashboard files are ready.
+Changes to `docs/status-board.html` or `docs/assets/` do not publish automatically. The retired dashboard source stays dormant until the workflow and Pages artifact are deliberately reactivated.
 
 ## App build and deployment
 
@@ -171,15 +171,15 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Mitigation:** Check repository **Settings → Actions → Runners**, confirm the runner is online with the expected labels, and restart or reprovision the VM before rerunning app deployment.
 
-## GitHub Pages status board
+## GitHub Pages status board (retired)
 
-### Publisher fails at `configure-pages`
+### Deactivation workflow fails at `configure-pages`
 
 **Cause:** GitHub Pages has not been enabled for the repository, or its source is not set to GitHub Actions. The default `GITHUB_TOKEN` cannot create the Pages site.
 
 **Mitigation:** Open **Settings → Pages**, select **GitHub Actions** as the source, save, and rerun [publish-status-board.yml](../.github/workflows/publish-status-board.yml).
 
-### Publisher fails at artifact upload or deployment
+### Deactivation workflow fails at artifact upload or deployment
 
 **Likely causes:** Missing `docs/index.html`, missing `docs/status-board.html`, an invalid asset path, or Pages permissions/policy restrictions.
 
@@ -197,11 +197,17 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Mitigation:** Refresh the page, verify the `owner/repository` and branch URL parameters, inspect browser developer tools, and wait for the 15-second polling cycle. Never put a personal access token in the static board.
 
+### Expanding a run shows no stage details
+
+**Likely causes:** GitHub API rate limiting, a private repository without authenticated access, missing job permissions, or a workflow that has not created job step data yet.
+
+**Mitigation:** Open the run's **Open GitHub log** link, confirm the repository is public or use a secure proxy, wait for an in-progress run to create job data, and inspect the browser developer tools for the jobs API response. Completed runs show each job step and identify the first failed stage when GitHub returns step conclusions.
+
 ### Dashboard stops updating after a merge
 
 <img src="assets/great-job.gif" width="560" alt="Great job"><br>Republish after confirming the dashboard files are ready.
 
-**Mitigation:** Check the latest publisher run in **Actions**. The publisher is manual-only, so use **Run workflow** after changes to `docs/index.html`, `docs/status-board.html`, or `docs/assets/**`. If the run failed, fix the reported step and rerun it.
+**Mitigation when reactivated:** Check the latest deactivation run in **Actions**. Use **Run workflow** to replace the published tracker with the inactive placeholder. If the run failed, fix the reported step and rerun it.
 
 ## Local verification checklist
 

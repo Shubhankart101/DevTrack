@@ -51,3 +51,7 @@ JSON file persistence is used in place of a relational database:
 - `status` must be one of: `open`, `in_progress`, `resolved`, `closed`
 - `priority` must be one of: `low`, `medium`, `high`, `critical`
 - `reporter_id` must be an integer referencing an existing reporter record
+
+## Operational visibility
+
+The standalone [pipeline status board](status-board.md) connects directly to GitHub Actions. Each run expands into job and step status, identifies failed stages when available, and links to the complete GitHub log.

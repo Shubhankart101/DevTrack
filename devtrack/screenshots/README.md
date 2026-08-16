@@ -22,6 +22,8 @@ These should demonstrate:
 
 <img src="../../docs/assets/eyebrow-raise-dwight.gif" width="560" alt="Careful review">
 
+The live-run pipeline tracker is retired for now. Its source is preserved for future use; connect API screenshots to the workflow run directly in GitHub Actions until it is reactivated.
+
 ## Project GIF gallery
 
 <img src="../../docs/assets/devtrack-code-loop.gif" width="560" alt="DevTrack code loop">

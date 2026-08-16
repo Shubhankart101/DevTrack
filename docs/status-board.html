@@ -61,6 +61,18 @@
     .name a { color: var(--text); text-decoration: none; }
     .name a:hover { color: var(--blue); }
     .run-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: .85rem; }
+    .run-toggle { display: block; width: 100%; padding: 0; border: 0; text-align: left; background: transparent; }
+    .run-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+    .run-details { grid-column: 2 / -1; padding-top: 14px; border-top: 1px solid var(--line); }
+    .stage-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .stage { display: flex; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
+    .stage-name { color: var(--text); }
+    .stage-state { color: var(--muted); font: 700 .74rem monospace; text-transform: uppercase; }
+    .stage-state.success { color: var(--green); }
+    .stage-state.failure { color: var(--red); }
+    .stage-state.pending { color: var(--yellow); }
+    .failure-note { margin: 0 0 10px; color: var(--red); font-weight: 700; }
+    .details-note { margin: 10px 0 0; color: var(--muted); font-size: .84rem; }
     .meta { margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
     .state { color: var(--muted); font: 700 .78rem monospace; text-transform: uppercase; }
     .empty, .error { padding: 28px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); }
@@ -100,6 +112,7 @@
       <button type="button" class="mood-card" data-filter="running"><img src="assets/bounce-dwight.gif" alt="Dwight bouncing"><p>Running: checks in motion</p></button>
       <button type="button" class="mood-card" data-filter="success"><img src="assets/great-job.gif" alt="Great job"><p>Succeeded: ship the good news</p></button>
     </section>
+    <section id="runs" class="runs" aria-live="polite"><div class="empty">Connecting to GitHub Actions...</div></section>
     <section class="reactions" aria-label="Pipeline reactions">
       <article class="reaction"><img src="assets/eyebrow-raise-dwight.gif" alt="Dwight raises an eyebrow"><p>Reviewing the diff</p></article>
       <article class="reaction"><img src="assets/crazy-dance-funny-dance.gif" alt="Celebrating a deployment"><p>Deployment celebration</p></article>
@@ -110,7 +123,6 @@
       <article class="reaction"><img src="assets/the-office-the-office-memes.gif" alt="Office reaction meme"><p>Team reaction</p></article>
       <article class="reaction"><img src="assets/thats-what-she-said-what-she-said.gif" alt="Office response reaction"><p>Pipeline banter</p></article>
     </section>
-    <section id="runs" class="runs" aria-live="polite"><div class="empty">Connecting to GitHub Actions...</div></section>
   </main>
 
   <script>
@@ -154,9 +166,48 @@
       }
       runs.innerHTML = filteredItems.map((run) => {
         const state = stateLabel(run);
-        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><p class="name"><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">${escapeHtml(run.name)}</a></p><p class="meta">Run #${escapeHtml(run.run_number)} · ${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p><a class="run-link" href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open GitHub run &#8599;</a></div><span class="state">${escapeHtml(state)}</span></article>`;
+        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><button type="button" class="run-toggle" data-run-id="${escapeHtml(run.id)}" aria-expanded="false"><p class="name">${escapeHtml(run.name)}</p><p class="meta">Run #${escapeHtml(run.run_number)} · ${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p></button><a class="run-link" href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open GitHub run &#8599;</a></div><span class="state">${escapeHtml(state)}</span><div class="run-details" data-details-for="${escapeHtml(run.id)}" hidden></div></article>`;
       }).join('');
     }
+
+    const jobState = (job) => job.conclusion || job.status || 'unknown';
+    const stageClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
+
+    async function expandRun(runId, toggle) {
+      const details = document.querySelector(`[data-details-for="${CSS.escape(runId)}"]`);
+      if (!details) return;
+      const isOpen = !details.hidden;
+      details.hidden = isOpen;
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      if (isOpen || details.dataset.loaded === 'true') return;
+      details.hidden = false;
+      details.innerHTML = '<p class="details-note">Loading job stages...</p>';
+      const run = (latestPayload?.workflow_runs || []).find((item) => String(item.id) === String(runId));
+      if (!run) return;
+      try {
+        const repository = repositoryInput.value.trim().split('/');
+        const jobsUrl = `https://api.github.com/repos/${encodeURIComponent(repository[0])}/${encodeURIComponent(repository[1])}/actions/runs/${encodeURIComponent(runId)}/jobs?per_page=100`;
+        const response = await fetch(jobsUrl, { headers: { Accept: 'application/vnd.github+json' } });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || `GitHub API returned ${response.status}`);
+        const jobs = payload.jobs || [];
+        const failedJob = jobs.find((job) => ['failure', 'cancelled', 'timed_out'].includes(jobState(job)) || (job.steps || []).some((step) => step.conclusion === 'failure'));
+        const failedStep = failedJob?.steps?.find((step) => step.conclusion === 'failure');
+        const failureNote = failedStep ? `<p class="failure-note">Failed stage: ${escapeHtml(failedJob.name)} / ${escapeHtml(failedStep.name)}</p>` : '';
+        const stages = jobs.flatMap((job) => (job.steps || []).map((step) => ({ name: `${job.name} / ${step.name}`, state: step.conclusion || step.status || 'unknown' })));
+        const fallbackStages = jobs.map((job) => ({ name: job.name, state: jobState(job) }));
+        const renderedStages = (stages.length ? stages : fallbackStages).map((stage) => `<li class="stage"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></li>`).join('');
+        details.innerHTML = `${failureNote}<ul class="stage-list">${renderedStages || '<li class="stage"><span class="stage-name">No job stages returned</span><span class="stage-state pending">unknown</span></li>'}</ul><p class="details-note">Stage status comes from GitHub Actions. <a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open the full GitHub log &#8599;</a></p>`;
+        details.dataset.loaded = 'true';
+      } catch (error) {
+        details.innerHTML = `<p class="details-note">${escapeHtml(error.message)} <a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open the full GitHub log &#8599;</a></p>`;
+      }
+    }
+
+    runs.addEventListener('click', (event) => {
+      const toggle = event.target.closest('.run-toggle');
+      if (toggle) expandRun(toggle.dataset.runId, toggle);
+    });
 
     document.querySelectorAll('.mood-card[data-filter]').forEach((card) => {
       card.classList.toggle('active', card.dataset.filter === activeFilter);

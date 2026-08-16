@@ -94,3 +94,7 @@ curl http://127.0.0.1:8000/api/issues/
 # Filter by status
 curl http://127.0.0.1:8000/api/issues/?status=open
 ```
+
+## Pipeline verification
+
+After changing an endpoint, use the [live status board](status-board.md) to inspect the related workflow run. Expanding a run shows the job steps and the exact failed stage when GitHub returns step data; the **Open GitHub run** link provides the complete log.

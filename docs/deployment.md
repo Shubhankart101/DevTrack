@@ -26,16 +26,16 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 | Workflow | Purpose |
 | --- | --- |
-| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually publish the standalone GitHub Actions status board to GitHub Pages |
+| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually remove the published status board and deploy an inactive placeholder |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
 
-## Standalone pipeline status board
+## Standalone pipeline status board (inactive)
 
-Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub. Use [status-board.md](status-board.md) for the complete local setup and branch-specific URLs.
+The standalone [status-board.html](status-board.html) implementation is retained for future use but is currently inactive and has no active README entrypoint. Use [status-board.md](status-board.md) for its preserved local setup and branch-specific URL details when it is reactivated.
 
-The dashboard uses entertaining GIFs as status controls: `office.gif` filters failed runs, `bounce-dwight.gif` filters running runs, and `great-job.gif` filters succeeded runs. Additional reaction GIFs appear alongside review, deployment, debugging, and unexpected-result states.
+The preserved dashboard code uses entertaining GIFs as status controls: `office.gif` filters failed runs, `bounce-dwight.gif` filters running runs, and `great-job.gif` filters succeeded runs. It is currently inactive.
 
 <img src="assets/office.gif" width="560" alt="Office team reaction"><br>Failed pipeline: investigate the run.
 
@@ -43,20 +43,13 @@ The dashboard uses entertaining GIFs as status controls: `office.gif` filters fa
 
 <img src="assets/great-job.gif" width="560" alt="Great job"><br>Succeeded pipeline: ready to celebrate.
 
-The two published live views are:
+The relative [status-board.html](status-board.html) file is preserved for future local use. Running `publish-status-board.yml` manually uploads only `docs/pages-disabled` and removes the tracker from the published Pages artifact.
 
-- [All branches](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack)
-- [Main branch](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main)
-
-The relative [status-board.html](status-board.html) link is for local development; the published links above open the live board instead of GitHub's source-file viewer.
-
-Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. Run the publisher manually whenever the dashboard HTML, root index, or GIF assets change.
-
-Enable GitHub Pages with **GitHub Actions** as the source. The board publishes when `publish-status-board.yml` is started manually. It will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
+Before running the removal workflow, ensure GitHub Pages is configured with **GitHub Actions** as the source. The default repository token cannot create the Pages site, but it can deploy the inactive placeholder after Pages is enabled.
 
 ### Dashboard recovery
 
-If the dashboard stops updating, inspect the latest **Publish Pipeline Status Board** run in **Actions** and rerun it after fixing the reported step. A `configure-pages` failure means Pages is not enabled with **GitHub Actions** as its source. A root 404 means the published artifact is missing `docs/index.html`; rerun the publisher after confirming that file is present.
+If the removal workflow fails, inspect the latest **Remove Published Pipeline Status Board** run in **Actions** and rerun it after fixing the reported step. A `configure-pages` failure means Pages is not enabled with **GitHub Actions** as its source.
 
 ## Recommended order
 
