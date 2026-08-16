@@ -98,3 +98,5 @@ curl http://127.0.0.1:8000/api/issues/?status=open
 ## Pipeline verification
 
 After changing an endpoint, use the [live status board](status-board.md) to inspect the related workflow run. Expand the run, click an individual stage to load its inline log, and use the **Open the GitHub job log** link for complete output.
+
+<img src="assets/great-job.gif" width="560" alt="Great job"><br>When the endpoint tests pass, the pipeline is ready to celebrate.
