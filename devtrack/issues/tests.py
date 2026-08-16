@@ -92,3 +92,45 @@ class ApiTests(TestCase):
 
         self.assertEqual(self.client.get('/api/reporters/?id=abc').status_code, 400)
         self.assertEqual(self.client.get('/api/issues/?id=abc').status_code, 400)
+
+    def test_duplicate_reporter_returns_400(self):
+        response = self.client.post('/api/reporters/', {
+            'id': 1,
+            'name': 'Another Alice',
+            'email': 'another@example.com',
+            'team': 'backend',
+        }, content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('already exists', response.json()['error'])
+
+    def test_invalid_issue_status_and_priority_return_400(self):
+        for field, value in (('status', 'pending'), ('priority', 'urgent')):
+            payload = {
+                'id': 20,
+                'title': 'Invalid issue',
+                'description': 'Invalid value',
+                'status': 'open',
+                'priority': 'medium',
+                'reporter_id': 1,
+            }
+            payload[field] = value
+            response = self.client.post('/api/issues/', payload, content_type='application/json')
+            self.assertEqual(response.status_code, 400)
+
+    def test_low_priority_issue_uses_low_priority_message(self):
+        response = self.client.post('/api/issues/', {
+            'id': 21,
+            'title': 'Minor UI issue',
+            'description': 'Small spacing problem',
+            'status': 'open',
+            'priority': 'low',
+            'reporter_id': 1,
+        }, content_type='application/json')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('low priority', response.json()['message'])
+
+    def test_unsupported_methods_return_405(self):
+        self.assertEqual(self.client.put('/api/reporters/').status_code, 405)
+        self.assertEqual(self.client.put('/api/issues/').status_code, 405)

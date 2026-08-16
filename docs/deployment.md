@@ -1,6 +1,6 @@
 # Deployment
 
-Application CI has two workflows. Pull requests targeting `main` run tests automatically; the build, test, and deployment workflow is started manually. Infrastructure workflows remain manual.
+Application CI has two merge/build workflows plus an extended manual test workflow. Pull requests targeting `main` run tests automatically; the build, test, and deployment workflow and the extended test workflow are started manually. Infrastructure workflows remain manual.
 
 ## Application pipelines
 
@@ -8,6 +8,7 @@ Application CI has two workflows. Pull requests targeting `main` run tests autom
 | --- | --- |
 | [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |
 | [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via a GitHub-hosted runner |
+| [extended-tests.yml](../.github/workflows/extended-tests.yml) | Manually run the expanded API scenario suite on a GitHub-hosted runner without deploying |
 
 The pull-request workflow runs on opened, reopened, and updated pull requests targeting `main`. Configure the `main` branch protection rules with these settings:
 
@@ -34,7 +35,7 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 ## Test commands
 
-From the repository root, install dependencies and run the same checks used by both application pipelines:
+From the repository root, install dependencies and run the same checks used by the application pipelines:
 
 ```bash
 pip install -r requirements.txt
