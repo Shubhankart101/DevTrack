@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - docs/index.html
       - docs/status-board.html
       - docs/assets/**
       - .github/workflows/publish-status-board.yml
