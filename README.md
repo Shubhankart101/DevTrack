@@ -33,12 +33,13 @@ The API is available at `http://127.0.0.1:8000/api/`.
 
 ## Application pipelines
 
-The repository has two application workflows:
+The repository has three application workflows:
 
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
 | [Pull Request Tests](.github/workflows/pull-request-tests.yml) | Automatically on pull requests targeting `main` | Runs Django checks and the complete app test suite before merge |
 | [Build, Test, and Deploy](.github/workflows/app-deploy.yml) | Manually from GitHub Actions | Compiles, checks, and tests the app, then optionally deploys it |
+| [Extended Manual Tests](.github/workflows/extended-tests.yml) | Every commit on every branch, Saturdays at 12:00 PM IST, or manually | Runs each API scenario as a separate sequential stage on a GitHub-hosted runner and prints dynamic results |
 
 The `main` branch should require the pull-request test job as a branch protection status check and disallow direct pushes. Infrastructure workflows are documented separately in [docs/deployment.md](docs/deployment.md).
 

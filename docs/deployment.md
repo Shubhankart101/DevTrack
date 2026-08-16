@@ -8,7 +8,7 @@ Application CI has two merge/build workflows plus an extended manual test workfl
 | --- | --- |
 | [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |
 | [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via a GitHub-hosted runner |
-| [extended-tests.yml](../.github/workflows/extended-tests.yml) | Manually run the expanded API scenario suite on a GitHub-hosted runner without deploying |
+| [extended-tests.yml](../.github/workflows/extended-tests.yml) | Run the expanded API scenario suite for every commit on every branch, every Saturday at 12:00 PM IST, or manually, without deploying |
 
 The pull-request workflow runs on opened, reopened, and updated pull requests targeting `main`. Configure the `main` branch protection rules with these settings:
 

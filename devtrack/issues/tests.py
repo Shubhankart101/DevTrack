@@ -28,6 +28,9 @@ class ApiTests(TestCase):
             file_patch.start()
 
     def tearDown(self):
+        reporters = self.reporters_file.read_text(encoding='utf-8')
+        issues = self.issues_file.read_text(encoding='utf-8')
+        print(f'SCENARIO {self._testMethodName}: reporters={reporters} issues={issues}')
         for file_patch in reversed(self.file_patches):
             file_patch.stop()
         self.temp_dir.cleanup()

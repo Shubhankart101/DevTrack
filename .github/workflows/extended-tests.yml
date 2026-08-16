@@ -1,6 +1,11 @@
 name: Extended Manual Tests
 
 on:
+  push:
+    branches:
+      - '**'
+  schedule:
+    - cron: '30 6 * * 6'
   workflow_dispatch:
     inputs:
       python_version:
@@ -37,5 +42,47 @@ jobs:
       - name: Run Django checks
         run: python devtrack/manage.py check
 
-      - name: Run extended test scenarios
-        run: python devtrack/manage.py test issues --verbosity 2
+      - name: Test API root endpoint
+        run: |
+          echo "SCENARIO: API root endpoint"
+          python devtrack/manage.py test issues.tests.ApiTests.test_api_root_lists_endpoints --verbosity 2
+
+      - name: Test reporter creation and retrieval
+        run: |
+          echo "SCENARIO: Reporter creation and retrieval"
+          python devtrack/manage.py test issues.tests.ApiTests.test_reporter_can_be_created_and_retrieved --verbosity 2
+
+      - name: Test critical issue creation and filtering
+        run: |
+          echo "SCENARIO: Critical issue creation and filtering"
+          python devtrack/manage.py test issues.tests.ApiTests.test_issue_creation_uses_priority_description_and_status_filter --verbosity 2
+
+      - name: Test missing records and reporters
+        run: |
+          echo "SCENARIO: Missing records and reporters"
+          python devtrack/manage.py test issues.tests.ApiTests.test_unknown_records_and_reporters_return_404_or_400 --verbosity 2
+
+      - name: Test invalid JSON and query values
+        run: |
+          echo "SCENARIO: Invalid JSON and query values"
+          python devtrack/manage.py test issues.tests.ApiTests.test_invalid_json_shapes_and_values_return_400 --verbosity 2
+
+      - name: Test duplicate reporter rejection
+        run: |
+          echo "SCENARIO: Duplicate reporter rejection"
+          python devtrack/manage.py test issues.tests.ApiTests.test_duplicate_reporter_returns_400 --verbosity 2
+
+      - name: Test invalid issue fields
+        run: |
+          echo "SCENARIO: Invalid issue fields"
+          python devtrack/manage.py test issues.tests.ApiTests.test_invalid_issue_status_and_priority_return_400 --verbosity 2
+
+      - name: Test low-priority issue behavior
+        run: |
+          echo "SCENARIO: Low-priority issue behavior"
+          python devtrack/manage.py test issues.tests.ApiTests.test_low_priority_issue_uses_low_priority_message --verbosity 2
+
+      - name: Test unsupported methods
+        run: |
+          echo "SCENARIO: Unsupported methods"
+          python devtrack/manage.py test issues.tests.ApiTests.test_unsupported_methods_return_405 --verbosity 2
