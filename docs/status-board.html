@@ -65,7 +65,10 @@
     .stage { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
     .stage-gif { width: 96px; height: 54px; border-radius: 6px; object-fit: cover; flex: 0 0 auto; }
     .stage-toggle { display: flex; align-items: center; gap: 12px; width: 100%; padding: 0; border: 0; color: inherit; text-align: left; background: transparent; }
+    .stage-toggle { cursor: pointer; }
     .stage-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+    .stage:hover { outline: 1px solid var(--blue); }
+    .stage-action { margin-left: auto; color: var(--blue); font: 700 .72rem monospace; text-transform: uppercase; white-space: nowrap; }
     .stage-log { grid-column: 1 / -1; padding: 12px; border-top: 1px solid var(--line); }
     .stage-log pre { max-height: 280px; margin: 0; overflow: auto; white-space: pre-wrap; color: #d1d5db; font: .78rem/1.45 Consolas, monospace; }
     .stage-name { color: var(--text); }
@@ -217,7 +220,7 @@
         const stageItems = stages.length ? stages : fallbackStages;
         const renderedStages = stageItems.map((stage, index) => {
           const logKey = `${runId}-${index}`;
-          return `<li class="stage"><button type="button" class="stage-toggle" data-job-id="${escapeHtml(stage.jobId)}" data-log-key="${escapeHtml(logKey)}" data-job-url="${escapeHtml(stage.jobUrl || run.html_url)}"><img class="stage-gif" src="${stageGifs[index % stageGifs.length]}" alt="Pipeline stage reaction"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></button><div class="stage-log" data-log-for="${escapeHtml(logKey)}" hidden></div></li>`;
+          return `<li class="stage"><button type="button" class="stage-toggle" data-job-id="${escapeHtml(stage.jobId)}" data-log-key="${escapeHtml(logKey)}" data-job-url="${escapeHtml(stage.jobUrl || run.html_url)}" aria-label="View log for ${escapeHtml(stage.name)}"><img class="stage-gif" src="${stageGifs[index % stageGifs.length]}" alt="Pipeline stage reaction"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span><span class="stage-action">View log</span></button><div class="stage-log" data-log-for="${escapeHtml(logKey)}" hidden></div></li>`;
         }).join('');
         details.innerHTML = `${failureNote}<ul class="stage-list">${renderedStages || '<li class="stage"><span class="stage-name">No job stages returned</span><span class="stage-state pending">unknown</span></li>'}</ul><p class="details-note">Stage status comes from GitHub Actions. <a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open the full GitHub log &#8599;</a></p>`;
         details.dataset.loaded = 'true';
