@@ -8,9 +8,7 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <p align="center"><a href=".github/workflows/terraform.yml">Reusable Terraform template</a></p>
 
-<p align="center"><a href="docs/status-board.html">Open the standalone live pipeline status board</a></p>
-
-<p align="center"><a href="docs/status-board.html">Open the live pipeline status board</a></p>
+<p align="center"><a href="docs/status-board.html?repo=Shubhankart101%2FDevTrack">Open the all-branches live status board</a> · <a href="docs/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main">Open the main-branch live status board</a></p>
 
 ## The DevTrack lifecycle
 
@@ -47,6 +45,8 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 ### Passed
 
 <img src="docs/assets/pipeline-success.gif" width="560" alt="Pipeline passed"><br>**<a href=".github/workflows/app-deploy.yml">Build, Test, and Deploy</a>** is ready to run.
+
+Live boards: [all branches](docs/status-board.html?repo=Shubhankart101%2FDevTrack) · [main branch](docs/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main) · [local setup guide](docs/status-board.md)
 
 ## Contents
 
@@ -112,31 +112,6 @@ The `main` branch should require the pull-request test job as a branch protectio
 	<img src="docs/assets/tired-office.gif" width="560" alt="Tired Office debugging loop">
 </p>
 
-## More pipeline energy
-
-### Extra momentum
-
-<img src="docs/assets/atg-studiocapa.gif" width="560" alt="Extra momentum">
-
-### When the build gets lively
-
-<img src="docs/assets/crazy-dance-funny-dance.gif" width="560" alt="Build celebration">
-
-### A careful review
-
-<img src="docs/assets/eyebrow-raise-dwight.gif" width="560" alt="Careful review">
-
-### The green build feeling
-
-<img src="docs/assets/hell-yeah-yeah.gif" width="560" alt="Green build celebration">
-
-### A surprising result
-
-<img src="docs/assets/pond-naravit-ppnaravit.gif" width="560" alt="Surprising pipeline result">
-
-### Office-level reactions
-
-<img src="docs/assets/the-office-the-office-memes.gif" width="560" alt="Office pipeline reaction">
 
 
 

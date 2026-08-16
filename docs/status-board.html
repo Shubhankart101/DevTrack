@@ -76,6 +76,8 @@
     <form id="controls" class="controls">
       <label for="repository">Repository</label>
       <input id="repository" value="Shubhankart101/DevTrack" pattern="[^/\\s]+/[^/\\s]+" aria-label="GitHub repository in owner slash repository format">
+      <label for="branch">Branch</label>
+      <input id="branch" placeholder="all branches" aria-label="Optional GitHub branch filter">
       <button type="submit">Refresh runs</button>
     </form>
 
@@ -85,6 +87,7 @@
 
   <script>
     const repositoryInput = document.getElementById('repository');
+    const branchInput = document.getElementById('branch');
     const controls = document.getElementById('controls');
     const summary = document.getElementById('summary');
     const runs = document.getElementById('runs');
@@ -92,6 +95,9 @@
     const formatDate = (value) => value ? new Date(value).toLocaleString() : 'Not started';
     const stateLabel = (run) => run.status === 'completed' ? (run.conclusion || 'completed') : run.status;
     const stateClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
+    const params = new URLSearchParams(window.location.search);
+    repositoryInput.value = params.get('repo') || repositoryInput.value;
+    branchInput.value = params.get('branch') || '';
 
     function render(payload) {
       const items = payload.workflow_runs || [];
@@ -100,7 +106,8 @@
         result[state] = (result[state] || 0) + 1;
         return result;
       }, {});
-      summary.innerHTML = `<span class="chip"><strong>${items.length}</strong> recent runs</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
+      const branchLabel = payload.branch || 'all branches';
+      summary.innerHTML = `<span class="chip"><strong>${items.length}</strong> recent runs</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Branch <strong>${escapeHtml(branchLabel)}</strong></span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
       if (!items.length) {
         runs.innerHTML = '<div class="empty">No workflow runs found for this repository.</div>';
         return;
@@ -113,22 +120,32 @@
 
     async function loadRuns() {
       const repository = repositoryInput.value.trim();
+      const branch = branchInput.value.trim();
       if (!/^[^/\s]+\/[^/\s]+$/.test(repository)) {
         runs.innerHTML = '<div class="error">Use the owner/repository format.</div>';
         return;
       }
       try {
-        const response = await fetch(`https://api.github.com/repos/${encodeURIComponent(repository.split('/')[0])}/${encodeURIComponent(repository.split('/')[1])}/actions/runs?per_page=20`, { headers: { Accept: 'application/vnd.github+json' } });
+        const branchQuery = branch ? `&branch=${encodeURIComponent(branch)}` : '';
+        const response = await fetch(`https://api.github.com/repos/${encodeURIComponent(repository.split('/')[0])}/${encodeURIComponent(repository.split('/')[1])}/actions/runs?per_page=20${branchQuery}`, { headers: { Accept: 'application/vnd.github+json' } });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.message || `GitHub API returned ${response.status}`);
         payload.fetched_at = new Date().toISOString();
+        payload.branch = branch;
         render(payload);
       } catch (error) {
         runs.innerHTML = `<div class="error">${escapeHtml(error.message)}<br><small>The repository must be public when this board is used without a server-side token.</small></div>`;
       }
     }
 
-    controls.addEventListener('submit', (event) => { event.preventDefault(); loadRuns(); });
+    controls.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const nextParams = new URLSearchParams();
+      nextParams.set('repo', repositoryInput.value.trim());
+      if (branchInput.value.trim()) nextParams.set('branch', branchInput.value.trim());
+      window.history.replaceState({}, '', `${window.location.pathname}?${nextParams}`);
+      loadRuns();
+    });
     loadRuns();
     setInterval(loadRuns, 15000);
   </script>

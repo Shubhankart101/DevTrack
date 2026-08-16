@@ -31,7 +31,12 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 ## Standalone pipeline status board
 
-Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub.
+Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub. Use [status-board.md](status-board.md) for the complete local setup and branch-specific URLs.
+
+The two live views are:
+
+- [All branches](status-board.html?repo=Shubhankart101%2FDevTrack)
+- [Main branch](status-board.html?repo=Shubhankart101%2FDevTrack&branch=main)
 
 To publish it, run `publish-status-board.yml` manually and enable GitHub Pages with **GitHub Actions** as the source. The published board will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
 
