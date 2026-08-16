@@ -24,9 +24,16 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 | Workflow | Purpose |
 | --- | --- |
+| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually publish the standalone GitHub Actions status board to GitHub Pages |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
+
+## Standalone pipeline status board
+
+Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub.
+
+To publish it, run `publish-status-board.yml` manually and enable GitHub Pages with **GitHub Actions** as the source. The published board will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
 
 ## Recommended order
 
