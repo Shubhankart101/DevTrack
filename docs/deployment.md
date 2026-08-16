@@ -4,6 +4,8 @@ Application CI has two merge/build workflows plus an extended manual test workfl
 
 ## Application pipelines
 
+Use the active [GitHub Actions pipeline-runs dashboard](https://github.com/Shubhankart101/DevTrack/actions) to inspect workflow status, expanded stages, and logs. The custom live tracker is retired and should not be used.
+
 | Workflow | Purpose |
 | --- | --- |
 | [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |

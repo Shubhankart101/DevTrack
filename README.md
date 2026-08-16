@@ -8,6 +8,8 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <p align="center"><a href=".github/workflows/terraform.yml">Reusable Terraform template</a></p>
 
+<p align="center"><a href="https://github.com/Shubhankart101/DevTrack/actions">Open the active pipeline runs dashboard</a></p>
+
 ## The DevTrack lifecycle
 
 ### 1. Pull request checks

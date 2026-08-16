@@ -16,6 +16,8 @@ This guide explains what should run for each kind of change in DevTrack, what ca
 
 ## Pipeline map
 
+The active pipeline-runs dashboard is [GitHub Actions → DevTrack](https://github.com/Shubhankart101/DevTrack/actions). Use it to inspect workflow runs, stages, and logs. The custom live tracker remains retired and is not an active entrypoint.
+
 - [Pull Request Tests](../.github/workflows/pull-request-tests.yml) runs Django checks and the complete test suite for pull requests targeting `main`.
 - [Extended Manual Tests](../.github/workflows/extended-tests.yml) runs on code-changing pushes, Saturdays at 12:00 PM IST, or manual dispatch.
 - [Build, Test, and Deploy](../.github/workflows/app-deploy.yml) is manual and compiles, checks, tests, and optionally deploys the app.
