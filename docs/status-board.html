@@ -56,6 +56,7 @@
     .name { margin: 0; font-weight: 700; }
     .name a { color: var(--text); text-decoration: none; }
     .name a:hover { color: var(--blue); }
+    .run-link { display: inline-block; margin-top: 8px; color: var(--blue); font-size: .85rem; }
     .meta { margin: 5px 0 0; color: var(--muted); font-size: .9rem; }
     .state { color: var(--muted); font: 700 .78rem monospace; text-transform: uppercase; }
     .empty, .error { padding: 28px; border: 1px dashed var(--line); border-radius: 12px; color: var(--muted); }
@@ -138,7 +139,7 @@
       }
       runs.innerHTML = filteredItems.map((run) => {
         const state = stateLabel(run);
-        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><p class="name"><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">${escapeHtml(run.name)}</a></p><p class="meta">${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p></div><span class="state">${escapeHtml(state)}</span></article>`;
+        return `<article class="run"><span class="dot ${stateClass(state)}"></span><div><p class="name"><a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">${escapeHtml(run.name)}</a></p><p class="meta">Run #${escapeHtml(run.run_number)} · ${escapeHtml(run.head_branch || 'unknown branch')} · ${escapeHtml(run.actor?.login || 'unknown actor')} · ${escapeHtml(formatDate(run.created_at))}</p><a class="run-link" href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open GitHub run &#8599;</a></div><span class="state">${escapeHtml(state)}</span></article>`;
       }).join('');
     }
 

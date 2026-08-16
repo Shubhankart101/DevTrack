@@ -8,7 +8,9 @@ Application CI has two merge/build workflows plus an extended manual test workfl
 | --- | --- |
 | [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |
 | [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via a GitHub-hosted runner |
-| [extended-tests.yml](../.github/workflows/extended-tests.yml) | Run the expanded API scenario suite for every commit on every branch, every Saturday at 12:00 PM IST, or manually, without deploying |
+| [extended-tests.yml](../.github/workflows/extended-tests.yml) | Run the expanded API scenario suite for code-changing commits on every branch, every Saturday at 12:00 PM IST, or manually, without deploying |
+
+Automatic pull-request and branch-push test runs skip changes that affect only `README.md` files. Changes to code still trigger them; manual and scheduled runs remain available.
 
 The pull-request workflow runs on opened, reopened, and updated pull requests targeting `main`. Configure the `main` branch protection rules with these settings:
 
@@ -24,7 +26,7 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 | Workflow | Purpose |
 | --- | --- |
-| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Manually publish the standalone GitHub Actions status board to GitHub Pages |
+| [publish-status-board.yml](../.github/workflows/publish-status-board.yml) | Publish the standalone GitHub Actions status board to GitHub Pages after merges to `main` or manually |
 | [runner-infra.yml](../.github/workflows/runner-infra.yml) | Provision the Azure-hosted Linux runner VM |
 | [azure-deploy.yml](../.github/workflows/azure-deploy.yml) | Provision or update Azure Web App infrastructure |
 | [terraform.yml](../.github/workflows/terraform.yml) | Reusable Terraform template (called by the two infra pipelines) |
@@ -33,12 +35,14 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 Open [status-board.html](status-board.html) directly for a server-free view of the latest public GitHub Actions runs. It polls GitHub every 15 seconds and links each run back to GitHub. Use [status-board.md](status-board.md) for the complete local setup and branch-specific URLs.
 
-The two live views are:
+The two published live views are:
 
-- [All branches](status-board.html?repo=Shubhankart101%2FDevTrack)
-- [Main branch](status-board.html?repo=Shubhankart101%2FDevTrack&branch=main)
+- [All branches](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack)
+- [Main branch](https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main)
 
-To publish it, run `publish-status-board.yml` manually and enable GitHub Pages with **GitHub Actions** as the source. The published board will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
+The relative [status-board.html](status-board.html) link is for local development; the published links above open the live board instead of GitHub's source-file viewer.
+
+Enable GitHub Pages with **GitHub Actions** as the source. The board publishes automatically when status-board files or GIF assets merge into `main`, and can also be started manually. It will be available at `https://OWNER.github.io/REPOSITORY/status-board.html`.
 
 ## Recommended order
 

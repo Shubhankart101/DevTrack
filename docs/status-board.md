@@ -2,6 +2,8 @@
 
 The pipeline boards are standalone HTML pages. They do not use Django, Terraform, or a local API server. The page calls the GitHub Actions API from the browser and refreshes every 15 seconds.
 
+Automatic test workflows ignore commits that change only a `README.md` file. Code changes still trigger the workflows, and a commit containing both code and README changes also triggers them. Manual dispatch and scheduled runs are unaffected.
+
 ## Prerequisites
 
 - Python 3.11 or newer
@@ -61,6 +63,7 @@ Selecting a GIF updates the URL, so filtered boards can be bookmarked or shared 
 - Recent workflow runs from GitHub Actions
 - Running, queued, passed, failed, and cancelled states
 - Branch, actor, creation time, and a link to the GitHub run
+- Run number and an explicit **Open GitHub run** link on every result
 - Counts for recent, running, passed, and failed runs
 - Automatic refresh every 15 seconds
 
@@ -74,8 +77,8 @@ The browser calls GitHub directly without exposing a token. This works for publi
 
 ## GitHub Pages
 
-The same board can be published through the manual [publish-status-board workflow](../.github/workflows/publish-status-board.yml). After GitHub Pages is configured to use GitHub Actions, use the same query parameters on the published URL:
+The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). After GitHub Pages is configured to use GitHub Actions, it publishes automatically when the board or its GIF assets merge into `main`, and it can also be run manually. Use the published URL instead of the relative HTML source link:
 
 ```text
-https://OWNER.github.io/REPOSITORY/status-board.html?repo=OWNER%2FREPOSITORY&branch=main
+https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main
 ```

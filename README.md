@@ -8,7 +8,9 @@ DevTrack is a minimal Django backend API for tracking engineering issues. It sup
 
 <p align="center"><a href=".github/workflows/terraform.yml">Reusable Terraform template</a></p>
 
-<p align="center"><a href="docs/status-board.html?repo=Shubhankart101%2FDevTrack">Open the all-branches live status board</a> · <a href="docs/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main">Open the main-branch live status board</a></p>
+<p align="center"><a href="https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack">Open the all-branches live status board</a> · <a href="https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main">Open the main-branch live status board</a></p>
+
+<p align="center"><sub>The live board republishes automatically when tracker or GIF changes merge into <code>main</code>.</sub></p>
 
 ## The DevTrack lifecycle
 
@@ -93,7 +95,7 @@ The repository has three application workflows:
 | --- | --- | --- |
 | [Pull Request Tests](.github/workflows/pull-request-tests.yml) | Automatically on pull requests targeting `main` | Runs Django checks and the complete app test suite before merge |
 | [Build, Test, and Deploy](.github/workflows/app-deploy.yml) | Manually from GitHub Actions | Compiles, checks, and tests the app, then optionally deploys it |
-| [Extended Manual Tests](.github/workflows/extended-tests.yml) | Every commit on every branch, Saturdays at 12:00 PM IST, or manually | Runs each API scenario as a separate sequential stage on a GitHub-hosted runner and prints dynamic results |
+| [Extended Manual Tests](.github/workflows/extended-tests.yml) | Code-changing commits on every branch, Saturdays at 12:00 PM IST, or manually | Runs each API scenario as a separate sequential stage on a GitHub-hosted runner and prints dynamic results |
 
 The `main` branch should require the pull-request test job as a branch protection status check and disallow direct pushes. Infrastructure workflows are documented separately in [docs/deployment.md](docs/deployment.md).
 
