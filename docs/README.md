@@ -213,7 +213,29 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 ## Local verification checklist
 
-Before pushing code changes:
+Run this sequence from the repository root before pushing any Python, Django, API, test, or workflow-related code change.
+
+### 1. Prepare the environment
+
+Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Linux/macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 2. Revalidate all application code
 
 ```powershell
 python -m compileall -q devtrack
@@ -221,7 +243,32 @@ python devtrack/manage.py check
 python devtrack/manage.py test issues
 ```
 
-Before publishing the dashboard:
+Run the complete extended scenario set used by the extended pipeline:
+
+```powershell
+python devtrack/manage.py test issues.tests --verbosity 2
+```
+
+Check the API manually when a route or response changes:
+
+```powershell
+python devtrack/manage.py runserver
+```
+
+Then exercise the endpoints documented in [api.md](api.md), including valid requests, invalid JSON, duplicate IDs, missing reporters, status filters, and unsupported methods.
+
+For Terraform code changes, run these commands from the affected Terraform root:
+
+```powershell
+terraform fmt -recursive
+terraform init
+terraform validate
+terraform plan
+```
+
+Review the plan before any apply operation.
+
+### 3. Revalidate the local pipeline dashboard
 
 ```powershell
 python -m http.server 8000 --directory docs
@@ -233,4 +280,6 @@ Then verify:
 - A branch URL with `&branch=main`
 - A status URL with `&status=success`, `&status=running`, or `&status=failure`
 - Every dashboard GIF loads
-- Clicking **Open GitHub run** reaches the corresponding Actions run
+- Clicking a run expands its jobs and stages
+- Clicking a stage loads its inline log or provides the GitHub job-log link
+- The failed stage is identified when GitHub returns step data
