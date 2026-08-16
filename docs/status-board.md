@@ -84,11 +84,11 @@ Return to the PowerShell terminal running the server and press `Ctrl+C`.
 
 ## Public repository limitation
 
-The browser calls GitHub directly without exposing a token. This works for public repositories. GitHub API rate limits still apply. Do not put a personal access token in `status-board.html` or any other static file. For private repositories, use a secure server-side proxy or a GitHub Pages-compatible backend that stores the token as a secret.
+The browser calls GitHub directly without exposing a token. If the unauthenticated API quota is exceeded, the dashboard falls back to `status-board-data.json`, which is generated with the GitHub Actions token during the Pages publish workflow. Do not put a personal access token in `status-board.html` or any other static file. For private repositories, use a secure server-side proxy or the authenticated Pages snapshot.
 
 ## GitHub Pages
 
-The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. After that one-time setup, start the publisher manually whenever the board or its GIF assets are ready. Use the published URL instead of the relative HTML source link:
+The board is published through the [publish-status-board workflow](../.github/workflows/publish-status-board.yml). Before the first publish, open **Repository Settings → Pages**, select **GitHub Actions** as the source, and save. The workflow cannot create the Pages site with the default repository token. After that one-time setup, start the publisher manually whenever the board or its GIF assets are ready. The workflow also refreshes the authenticated Actions snapshot used during rate limiting. Use the published URL instead of the relative HTML source link:
 
 ```text
 https://shubhankart101.github.io/DevTrack/status-board.html?repo=Shubhankart101%2FDevTrack&branch=main

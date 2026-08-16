@@ -197,7 +197,7 @@ Run [runner-infra.yml](../.github/workflows/runner-infra.yml) manually before de
 
 **Likely causes:** GitHub API rate limiting, a private repository without a secure proxy, browser caching, or an invalid repository/branch query parameter.
 
-**Mitigation:** Refresh the page, verify the `owner/repository` and branch URL parameters, inspect browser developer tools, and wait for the 15-second polling cycle. Never put a personal access token in the static board.
+**Mitigation:** Refresh the page, verify the `owner/repository` and branch URL parameters, inspect browser developer tools, and wait for the 15-second polling cycle. When the public API quota is exceeded, rerun the Pages workflow so it refreshes the authenticated `status-board-data.json` snapshot. Never put a personal access token in the static board.
 
 ### Expanding a run shows no stage details
 

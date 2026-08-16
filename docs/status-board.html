@@ -160,7 +160,8 @@
         return result;
       }, {});
       const branchLabel = payload.branch || 'all branches';
-      summary.innerHTML = `<span class="chip"><strong>${filteredItems.length}</strong> ${activeFilter === 'all' ? 'recent runs' : `${escapeHtml(activeFilter)} runs`}</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Branch <strong>${escapeHtml(branchLabel)}</strong></span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
+      const sourceLabel = payload.source === 'snapshot' ? 'authenticated snapshot' : 'live API';
+      summary.innerHTML = `<span class="chip"><strong>${filteredItems.length}</strong> ${activeFilter === 'all' ? 'recent runs' : `${escapeHtml(activeFilter)} runs`}</span><span class="chip"><strong>${counts.in_progress || 0}</strong> running</span><span class="chip"><strong>${counts.success || 0}</strong> passed</span><span class="chip"><strong>${counts.failure || 0}</strong> failed</span><span class="chip">Branch <strong>${escapeHtml(branchLabel)}</strong></span><span class="chip">Source <strong>${sourceLabel}</strong></span><span class="chip">Updated <strong>${escapeHtml(formatDate(payload.fetched_at))}</strong></span>`;
       if (!filteredItems.length) {
         runs.innerHTML = `<div class="empty">No ${activeFilter === 'all' ? '' : `${escapeHtml(activeFilter)} `}workflow runs found for this repository.</div>`;
         return;
@@ -238,7 +239,17 @@
         payload.branch = branch;
         render(payload);
       } catch (error) {
-        runs.innerHTML = `<div class="error">${escapeHtml(error.message)}<br><small>The repository must be public when this board is used without a server-side token.</small></div>`;
+        try {
+          const snapshotResponse = await fetch(`status-board-data.json?timestamp=${Date.now()}`);
+          if (!snapshotResponse.ok) throw error;
+          const snapshot = await snapshotResponse.json();
+          snapshot.fetched_at = snapshot.fetched_at || new Date().toISOString();
+          snapshot.branch = branch;
+          snapshot.source = 'snapshot';
+          render(snapshot);
+        } catch (snapshotError) {
+          runs.innerHTML = `<div class="error">${escapeHtml(error.message)}<br><small>The authenticated Pages snapshot is unavailable. Rerun the Publish Pipeline Status Board workflow.</small></div>`;
+        }
       }
     }
 
