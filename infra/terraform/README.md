@@ -47,14 +47,28 @@ The runner workflow registers a repository-scoped Linux runner with the built-in
 
 <img src="../../docs/assets/pipeline-success.gif" width="560" alt="Pipeline passed">
 
+## More pipeline energy
+
+### Extra momentum
+
 <img src="../../docs/assets/atg-studiocapa.gif" width="560" alt="Extra momentum">
+
+### When the build gets lively
 
 <img src="../../docs/assets/crazy-dance-funny-dance.gif" width="560" alt="Build celebration">
 
+### A careful review
+
 <img src="../../docs/assets/eyebrow-raise-dwight.gif" width="560" alt="Careful review">
+
+### The green build feeling
 
 <img src="../../docs/assets/hell-yeah-yeah.gif" width="560" alt="Green build celebration">
 
+### A surprising result
+
 <img src="../../docs/assets/pond-naravit-ppnaravit.gif" width="560" alt="Surprising pipeline result">
+
+### Office-level reactions
 
 <img src="../../docs/assets/the-office-the-office-memes.gif" width="560" alt="Office pipeline reaction">
