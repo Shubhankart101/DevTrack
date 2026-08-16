@@ -43,13 +43,13 @@
     .summary { margin-bottom: 18px; }
     .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: #111d2d; }
     .chip strong { color: var(--text); }
-    .reactions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 22px; }
+    .reactions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 22px; }
     .reaction { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #111d2d; }
     .reaction img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
     .reaction p { margin: 0; padding: 9px 10px; color: var(--muted); font-size: .82rem; }
     .runs { display: grid; gap: 12px; }
     .run { display: grid; grid-template-columns: 13px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #152235dd; }
-    .run-gif { display: block; width: 112px; height: 64px; margin-bottom: 10px; border-radius: 7px; object-fit: cover; }
+    .run-gif { display: block; width: 180px; height: 102px; margin-bottom: 12px; border-radius: 9px; object-fit: cover; }
     .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--muted); }
     .dot.success { background: var(--green); }
     .dot.failure { background: var(--red); }
@@ -62,7 +62,8 @@
     .run-toggle:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
     .run-details { grid-column: 2 / -1; padding-top: 14px; border-top: 1px solid var(--line); }
     .stage-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
-    .stage { display: flex; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
+    .stage { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 6px; background: #111d2d; font-size: .88rem; }
+    .stage-gif { width: 96px; height: 54px; border-radius: 6px; object-fit: cover; flex: 0 0 auto; }
     .stage-name { color: var(--text); }
     .stage-state { color: var(--muted); font: 700 .74rem monospace; text-transform: uppercase; }
     .stage-state.success { color: var(--green); }
@@ -78,7 +79,7 @@
     @media (max-width: 680px) {
       header { display: block; }
       .live { display: block; margin-top: 22px; }
-      .reactions { grid-template-columns: repeat(2, 1fr); }
+      .reactions { grid-template-columns: 1fr; }
       .run { grid-template-columns: 13px minmax(0, 1fr); }
       .state { grid-column: 2; }
     }
@@ -134,6 +135,7 @@
     const stateLabel = (run) => run.status === 'completed' ? (run.conclusion || 'completed') : run.status;
     const stateClass = (state) => state === 'success' ? 'success' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'failure' : 'pending';
     const stateGif = (state) => state === 'success' ? 'assets/great-job.gif' : ['failure', 'cancelled', 'timed_out'].includes(state) ? 'assets/office.gif' : 'assets/bounce-dwight.gif';
+    const stageGifs = ['assets/eyebrow-raise-dwight.gif', 'assets/crazy-dance-funny-dance.gif', 'assets/hell-yeah-yeah.gif', 'assets/tired-office.gif', 'assets/atg-studiocapa.gif', 'assets/pond-naravit-ppnaravit.gif', 'assets/the-office-the-office-memes.gif', 'assets/thats-what-she-said-what-she-said.gif'];
     const params = new URLSearchParams(window.location.search);
     let activeFilter = params.get('status') || 'all';
     let latestPayload = null;
@@ -207,7 +209,7 @@
         const failureNote = failedStep ? `<p class="failure-note">Failed stage: ${escapeHtml(failedJob.name)} / ${escapeHtml(failedStep.name)}</p>` : '';
         const stages = jobs.flatMap((job) => (job.steps || []).map((step) => ({ name: `${job.name} / ${step.name}`, state: step.conclusion || step.status || 'unknown' })));
         const fallbackStages = jobs.map((job) => ({ name: job.name, state: jobState(job) }));
-        const renderedStages = (stages.length ? stages : fallbackStages).map((stage) => `<li class="stage"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></li>`).join('');
+        const renderedStages = (stages.length ? stages : fallbackStages).map((stage, index) => `<li class="stage"><img class="stage-gif" src="${stageGifs[index % stageGifs.length]}" alt="Pipeline stage reaction"><span class="stage-name">${escapeHtml(stage.name)}</span><span class="stage-state ${stageClass(stage.state)}">${escapeHtml(stage.state)}</span></li>`).join('');
         details.innerHTML = `${failureNote}<ul class="stage-list">${renderedStages || '<li class="stage"><span class="stage-name">No job stages returned</span><span class="stage-state pending">unknown</span></li>'}</ul><p class="details-note">Stage status comes from GitHub Actions. <a href="${escapeHtml(run.html_url)}" target="_blank" rel="noreferrer">Open the full GitHub log &#8599;</a></p>`;
         details.dataset.loaded = 'true';
       } catch (error) {

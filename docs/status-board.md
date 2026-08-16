@@ -66,6 +66,8 @@ http://127.0.0.1:8000/status-board.html?repo=Shubhankart101%2FDevTrack&branch=ma
 
 Click a run to expand its stages and open the full GitHub Actions log.
 
+Each expanded stage also receives an entertaining reaction GIF. The dashboard cycles through the available reaction images when a workflow has more stages than images.
+
 ## What the board shows
 
 - Recent workflow runs from GitHub Actions
