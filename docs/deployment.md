@@ -7,7 +7,7 @@ Application CI has two workflows. Pull requests targeting `main` run tests autom
 | Workflow | Purpose |
 | --- | --- |
 | [pull-request-tests.yml](../.github/workflows/pull-request-tests.yml) | Run Django checks and all app tests for pull requests targeting `main` |
-| [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via the self-hosted runner |
+| [app-deploy.yml](../.github/workflows/app-deploy.yml) | Manually build, test, and optionally deploy the Django app via a GitHub-hosted runner |
 
 The pull-request workflow runs on opened, reopened, and updated pull requests targeting `main`. Configure the `main` branch protection rules with these settings:
 
@@ -29,10 +29,8 @@ In GitHub, open **Settings → Branches → Add branch ruleset**, target `main`,
 
 ## Recommended order
 
-1. Run **runner-infra** with `terraform_action=apply`.
-2. Confirm the runner is online in Actions → Runners in the repository settings.
-3. Run **azure-deploy** with `terraform_action=apply`.
-4. Run **app-deploy** manually to build, test, and deploy the Django application.
+1. Run **azure-deploy** with `terraform_action=apply`.
+2. Run **app-deploy** manually to build, test, and deploy the Django application on `ubuntu-latest`.
 
 ## Test commands
 
@@ -46,9 +44,9 @@ python devtrack/manage.py test issues
 
 The test suite is located at `devtrack/issues/tests.py` and uses temporary JSON files, so it does not modify the development fixtures.
 
-## Self-hosted runner
+## Self-hosted runner infrastructure
 
-The runner VM runs Ubuntu 22.04 (`Standard_B2s`) on Azure. It registers with the labels `self-hosted`, `linux`, `azure`, and `devtrack`. The app deployment job targets those labels.
+The repository still contains the optional Azure self-hosted runner infrastructure for a future migration. The application workflows currently use GitHub-hosted `ubuntu-latest` runners, so provisioning the runner is not required for normal application builds, tests, or deployments.
 
 ## Terraform structure
 

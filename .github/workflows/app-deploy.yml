@@ -14,11 +14,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on:
-      - self-hosted
-      - linux
-      - azure
-      - devtrack
+    runs-on: ubuntu-latest
     env:
       PYTHON_VERSION: ${{ inputs.python_version || '3.12' }}
       AZURE_WEBAPP_NAME: ${{ inputs.app_name || secrets.AZURE_WEBAPP_NAME }}
