@@ -2,6 +2,10 @@
 
 Base URL: `http://127.0.0.1:8000/api/`
 
+## Interactive API console
+
+Start the local static docs server with `python -m http.server 8000 --directory docs`, then open the [Swagger-style API console](api-console.html) at `http://127.0.0.1:8000/api-console.html`. It provides endpoint presets, editable JSON request bodies, response status codes, and formatted response output.
+
 ## Reporter endpoints
 
 | Method | Endpoint | Description |

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevTrack | API Console</title>
+  <style>
+    :root { --bg: #0c1420; --panel: #152235; --panel-strong: #1c2c43; --line: #30435e; --text: #edf4fb; --muted: #9aabc0; --blue: #63b3ed; --green: #78d89a; --red: #ff8178; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--text); background: radial-gradient(circle at top right, #1c3350 0, var(--bg) 42%); font: 16px/1.5 "Segoe UI", sans-serif; }
+    main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
+    header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+    h1 { margin: 0; font-size: clamp(2.3rem, 6vw, 4.5rem); line-height: .95; letter-spacing: -.05em; }
+    .subtitle { max-width: 680px; margin: 14px 0 0; color: var(--muted); }
+    .local { color: var(--green); font: 700 .78rem monospace; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+    .local::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: currentColor; }
+    .layout { display: grid; grid-template-columns: minmax(270px, .8fr) minmax(0, 1.5fr); gap: 16px; }
+    .panel { border: 1px solid var(--line); border-radius: 12px; background: #152235dd; }
+    .panel-head { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .panel-head h2 { margin: 0; font-size: 1rem; }
+    .panel-body { padding: 20px; }
+    .endpoint-list { display: grid; gap: 9px; }
+    button, select, input, textarea { border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--panel); font: inherit; }
+    button { padding: 10px 14px; cursor: pointer; }
+    button:hover, button.active { border-color: var(--blue); background: var(--panel-strong); }
+    .endpoint { display: grid; grid-template-columns: 58px 1fr; gap: 10px; align-items: center; width: 100%; padding: 12px; text-align: left; }
+    .method { font: 700 .72rem monospace; text-align: center; }
+    .method.get { color: var(--green); } .method.post { color: var(--blue); }
+    .path { overflow-wrap: anywhere; color: var(--text); font: .84rem monospace; }
+    .field { display: grid; gap: 7px; margin-bottom: 16px; }
+    label { color: var(--muted); font-size: .88rem; }
+    select, input, textarea { width: 100%; padding: 10px 12px; }
+    textarea { min-height: 210px; resize: vertical; font: .82rem/1.5 Consolas, monospace; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .primary { border-color: var(--blue); background: #1d4569; }
+    .response { margin-top: 20px; }
+    .response-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
+    .response-head h2 { margin: 0; font-size: 1rem; }
+    .status { font: 700 .78rem monospace; }
+    .status.ok { color: var(--green); } .status.bad { color: var(--red); }
+    pre { max-height: 480px; margin: 0; overflow: auto; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #0a111c; color: #d1d5db; font: .82rem/1.5 Consolas, monospace; white-space: pre-wrap; }
+    .hint { margin: 0 0 18px; color: var(--muted); font-size: .88rem; }
+    @media (max-width: 760px) { header { display: block; } .local { display: block; margin-top: 20px; } .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><h1>API console</h1><p class="subtitle">A Swagger-style request builder for the DevTrack API. Pick an endpoint, edit the payload, and inspect the live response.</p></div>
+      <div class="local">Local API tester</div>
+    </header>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head"><h2>Endpoints</h2></div>
+        <div class="panel-body endpoint-list">
+          <button class="endpoint active" data-method="GET" data-path="/api/" data-body=""><span class="method get">GET</span><span class="path">/api/</span></button>
+          <button class="endpoint" data-method="GET" data-path="/api/reporters/" data-body=""><span class="method get">GET</span><span class="path">/api/reporters/</span></button>
+          <button class="endpoint" data-method="POST" data-path="/api/reporters/" data-body='{"id": 1, "name": "Alice Engineer", "email": "alice@example.com", "team": "backend"}'><span class="method post">POST</span><span class="path">/api/reporters/</span></button>
+          <button class="endpoint" data-method="GET" data-path="/api/issues/" data-body=""><span class="method get">GET</span><span class="path">/api/issues/</span></button>
+          <button class="endpoint" data-method="POST" data-path="/api/issues/" data-body='{"id": 1, "title": "Login button not working", "description": "Mobile issue", "status": "open", "priority": "critical", "reporter_id": 1}'><span class="method post">POST</span><span class="path">/api/issues/</span></button>
+          <button class="endpoint" data-method="GET" data-path="/api/issues/?status=open" data-body=""><span class="method get">GET</span><span class="path">/api/issues/?status=open</span></button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Request</h2></div>
+        <div class="panel-body">
+          <p class="hint">Requests target the current host, so this page works with the local Django server at <code>http://127.0.0.1:8000</code>.</p>
+          <div class="field"><label for="method">Method</label><select id="method"><option>GET</option><option>POST</option></select></div>
+          <div class="field"><label for="path">Path</label><input id="path" value="/api/"></div>
+          <div class="field"><label for="body">JSON body</label><textarea id="body" spellcheck="false" placeholder="POST requests use JSON here."></textarea></div>
+          <div class="actions"><button id="send" class="primary" type="button">Send request</button><button id="format" type="button">Format JSON</button><button id="clear" type="button">Clear response</button></div>
+          <div class="response"><div class="response-head"><h2>Response</h2><span id="status" class="status">No request sent</span></div><pre id="output">Choose an endpoint and send a request.</pre></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const method = document.getElementById('method');
+    const path = document.getElementById('path');
+    const body = document.getElementById('body');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const pretty = (value) => { try { return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2); } catch { return String(value); } };
+
+    function selectEndpoint(endpoint) {
+      document.querySelectorAll('.endpoint').forEach((item) => item.classList.toggle('active', item === endpoint));
+      method.value = endpoint.dataset.method;
+      path.value = endpoint.dataset.path;
+      body.value = endpoint.dataset.body ? pretty(endpoint.dataset.body) : '';
+    }
+
+    document.querySelectorAll('.endpoint').forEach((endpoint) => endpoint.addEventListener('click', () => selectEndpoint(endpoint)));
+    document.getElementById('format').addEventListener('click', () => { if (body.value.trim()) body.value = pretty(body.value); });
+    document.getElementById('clear').addEventListener('click', () => { output.textContent = 'Choose an endpoint and send a request.'; status.textContent = 'No request sent'; status.className = 'status'; });
+    document.getElementById('send').addEventListener('click', async () => {
+      status.textContent = 'Sending...';
+      status.className = 'status';
+      try {
+        let requestBody;
+        if (method.value === 'POST') {
+          requestBody = body.value.trim() ? JSON.parse(body.value) : {};
+        }
+        const response = await fetch(path.value, { method: method.value, headers: method.value === 'POST' ? { 'Content-Type': 'application/json' } : {}, body: method.value === 'POST' ? JSON.stringify(requestBody) : undefined });
+        const text = await response.text();
+        output.textContent = pretty(text);
+        status.textContent = `${response.status} ${response.statusText}`;
+        status.className = `status ${response.ok ? 'ok' : 'bad'}`;
+      } catch (error) {
+        output.textContent = error instanceof SyntaxError ? 'Invalid JSON body. Use Format JSON or correct the payload.' : error.message;
+        status.textContent = 'Request failed';
+        status.className = 'status bad';
+      }
+    });
+  </script>
+</body>
+</html>

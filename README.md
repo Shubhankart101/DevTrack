@@ -71,6 +71,8 @@ python devtrack/manage.py runserver
 
 The API is available at `http://127.0.0.1:8000/api/`.
 
+Use the local [Swagger-style API console](docs/api-console.html) at `http://127.0.0.1:8000/api-console.html` to select endpoints, send requests, and inspect responses.
+
 ## Application pipelines
 
 The repository has three application workflows:
