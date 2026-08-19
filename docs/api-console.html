@@ -33,6 +33,9 @@
     textarea { min-height: 210px; resize: vertical; font: .82rem/1.5 Consolas, monospace; }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .primary { border-color: var(--blue); background: #1d4569; }
+    .validation { min-height: 22px; margin: 8px 0 0; font-size: .84rem; }
+    .validation.valid { color: var(--green); }
+    .validation.invalid { color: var(--red); }
     .response { margin-top: 20px; }
     .response-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; }
     .response-head h2 { margin: 0; font-size: 1rem; }
@@ -69,8 +72,8 @@
           <p class="hint">Requests target the current host, so this page works with the local Django server at <code>http://127.0.0.1:8000</code>.</p>
           <div class="field"><label for="method">Method</label><select id="method"><option>GET</option><option>POST</option></select></div>
           <div class="field"><label for="path">Path</label><input id="path" value="/api/"></div>
-          <div class="field"><label for="body">JSON body</label><textarea id="body" spellcheck="false" placeholder="POST requests use JSON here."></textarea></div>
-          <div class="actions"><button id="send" class="primary" type="button">Send request</button><button id="format" type="button">Format JSON</button><button id="clear" type="button">Clear response</button></div>
+          <div class="field"><label for="body">JSON body</label><textarea id="body" spellcheck="false" placeholder="POST requests use JSON here."></textarea><div id="validation" class="validation" aria-live="polite">GET requests do not require a JSON body.</div></div>
+          <div class="actions"><button id="send" class="primary" type="button">Send request</button><button id="validate" type="button">Validate JSON</button><button id="format" type="button">Format JSON</button><button id="clear" type="button">Clear response</button></div>
           <div class="response"><div class="response-head"><h2>Response</h2><span id="status" class="status">No request sent</span></div><pre id="output">Choose an endpoint and send a request.</pre></div>
         </div>
       </section>
@@ -83,6 +86,7 @@
     const body = document.getElementById('body');
     const output = document.getElementById('output');
     const status = document.getElementById('status');
+    const validation = document.getElementById('validation');
     const pretty = (value) => { try { return JSON.stringify(typeof value === 'string' ? JSON.parse(value) : value, null, 2); } catch { return String(value); } };
 
     function selectEndpoint(endpoint) {
@@ -90,12 +94,41 @@
       method.value = endpoint.dataset.method;
       path.value = endpoint.dataset.path;
       body.value = endpoint.dataset.body ? pretty(endpoint.dataset.body) : '';
+      validateBody();
     }
 
     document.querySelectorAll('.endpoint').forEach((endpoint) => endpoint.addEventListener('click', () => selectEndpoint(endpoint)));
-    document.getElementById('format').addEventListener('click', () => { if (body.value.trim()) body.value = pretty(body.value); });
+    function validateBody() {
+      if (method.value === 'GET') {
+        validation.textContent = 'GET requests do not require a JSON body.';
+        validation.className = 'validation';
+        return true;
+      }
+      if (!body.value.trim()) {
+        validation.textContent = 'Invalid: enter a JSON object before sending.';
+        validation.className = 'validation invalid';
+        return false;
+      }
+      try {
+        const parsed = JSON.parse(body.value);
+        if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') throw new Error('JSON body must be an object.');
+        validation.textContent = 'Valid JSON object ready to send.';
+        validation.className = 'validation valid';
+        return true;
+      } catch (error) {
+        validation.textContent = `Invalid JSON: ${error.message}`;
+        validation.className = 'validation invalid';
+        return false;
+      }
+    }
+
+    document.getElementById('validate').addEventListener('click', validateBody);
+    document.getElementById('format').addEventListener('click', () => { if (body.value.trim()) { body.value = pretty(body.value); validateBody(); } });
+    method.addEventListener('change', validateBody);
+    body.addEventListener('input', () => { if (method.value === 'POST') validateBody(); });
     document.getElementById('clear').addEventListener('click', () => { output.textContent = 'Choose an endpoint and send a request.'; status.textContent = 'No request sent'; status.className = 'status'; });
     document.getElementById('send').addEventListener('click', async () => {
+      if (!validateBody()) return;
       status.textContent = 'Sending...';
       status.className = 'status';
       try {

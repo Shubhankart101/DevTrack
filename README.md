@@ -71,7 +71,253 @@ python devtrack/manage.py runserver
 
 The API is available at `http://127.0.0.1:8000/api/`.
 
-Use the local [Swagger-style API console](docs/api-console.html) at `http://127.0.0.1:8000/api-console.html` to select endpoints, send requests, and inspect responses.
+Use the local [Swagger-style API console](docs/api-console.html) at `http://127.0.0.1:8000/api-console.html` to select endpoints, edit JSON request bodies, validate them, send requests, and inspect responses.
+
+## API console examples
+
+Start Django and the docs server first:
+
+```powershell
+python devtrack/manage.py runserver
+python -m http.server 8000 --directory docs
+```
+
+Open `http://127.0.0.1:8000/api-console.html`, select an endpoint, copy the request values below, and choose **Send request**.
+
+### 1. API root
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/
+```
+
+**Response: `200 OK`**
+
+```json
+{
+	"endpoints": [
+		"/api/reporters/",
+		"/api/reporters/?id=<id>",
+		"/api/issues/",
+		"/api/issues/?id=<id>",
+		"/api/issues/?status=<status>"
+	]
+}
+```
+
+### 2. List reporters
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/reporters/
+```
+
+**Response: `200 OK`**
+
+```json
+[
+	{
+		"id": 1,
+		"name": "Alice Engineer",
+		"email": "alice@example.com",
+		"team": "backend"
+	}
+]
+```
+
+### 3. Get one reporter
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/reporters/?id=1
+```
+
+**Response: `200 OK`**
+
+```json
+{
+	"id": 1,
+	"name": "Alice Engineer",
+	"email": "alice@example.com",
+	"team": "backend"
+}
+```
+
+**Missing reporter response: `404 Not Found`**
+
+```json
+{
+	"error": "Reporter not found"
+}
+```
+
+### 4. Create a reporter
+
+**Request**
+
+```http
+POST http://127.0.0.1:8000/api/reporters/
+Content-Type: application/json
+```
+
+```json
+{
+	"id": 2,
+	"name": "Bob Builder",
+	"email": "bob@example.com",
+	"team": "platform"
+}
+```
+
+**Response: `201 Created`**
+
+```json
+{
+	"id": 2,
+	"name": "Bob Builder",
+	"email": "bob@example.com",
+	"team": "platform"
+}
+```
+
+**Invalid reporter response: `400 Bad Request`**
+
+```json
+{
+	"error": "Invalid email"
+}
+```
+
+### 5. List issues
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/issues/
+```
+
+**Response: `200 OK`**
+
+```json
+[
+	{
+		"id": 1,
+		"title": "Login button not working",
+		"description": "Mobile issue",
+		"status": "open",
+		"priority": "critical",
+		"reporter_id": 1,
+		"created_at": "<timestamp>",
+		"message": "[URGENT] Login button not working - needs immediate attention"
+	}
+]
+```
+
+### 6. Get one issue
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/issues/?id=1
+```
+
+**Response: `200 OK`**
+
+```json
+{
+	"id": 1,
+	"title": "Login button not working",
+	"description": "Mobile issue",
+	"status": "open",
+	"priority": "critical",
+	"reporter_id": 1,
+	"created_at": "<timestamp>",
+	"message": "[URGENT] Login button not working - needs immediate attention"
+}
+```
+
+**Missing issue response: `404 Not Found`**
+
+```json
+{
+	"error": "Issue not found"
+}
+```
+
+### 7. Filter issues by status
+
+**Request**
+
+```text
+GET http://127.0.0.1:8000/api/issues/?status=open
+```
+
+**Response: `200 OK`**
+
+```json
+[
+	{
+		"id": 1,
+		"title": "Login button not working",
+		"description": "Mobile issue",
+		"status": "open",
+		"priority": "critical",
+		"reporter_id": 1,
+		"created_at": "<timestamp>",
+		"message": "[URGENT] Login button not working - needs immediate attention"
+	}
+]
+```
+
+Supported statuses are `open`, `in_progress`, `resolved`, and `closed`.
+
+### 8. Create an issue
+
+**Request**
+
+```http
+POST http://127.0.0.1:8000/api/issues/
+Content-Type: application/json
+```
+
+```json
+{
+	"id": 2,
+	"title": "Add pipeline run links",
+	"description": "Show the relevant GitHub Actions run from the dashboard.",
+	"status": "open",
+	"priority": "high",
+	"reporter_id": 1
+}
+```
+
+**Response: `201 Created`**
+
+```json
+{
+	"id": 2,
+	"title": "Add pipeline run links",
+	"description": "Show the relevant GitHub Actions run from the dashboard.",
+	"status": "open",
+	"priority": "high",
+	"reporter_id": 1,
+	"created_at": "<timestamp>",
+	"message": "Add pipeline run links [high]"
+}
+```
+
+**Validation failure response: `400 Bad Request`**
+
+```json
+{
+	"error": "Title cannot be empty"
+}
+```
+
+Use a new numeric `id` for each POST example because duplicate IDs are rejected.
 
 ## Application pipelines
 
