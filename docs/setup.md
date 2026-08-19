@@ -51,7 +51,7 @@ python devtrack/manage.py runserver
 
 The API is available at `http://127.0.0.1:8000/api/`.
 
-Open the [Swagger-style API console](api-console.html) at `http://127.0.0.1:8000/api-console.html` to test GET and POST endpoints locally. Select a preset, edit its path or JSON body, and choose **Send request**.
+Open the [Swagger-style API console](api-console.html) at `http://127.0.0.1:8000/api-console.html` to test GET and POST endpoints locally. Select a preset, use the [JSON body guide](api-console.md), edit its path or body, validate it, and choose **Send request**.
 
 For live pipeline visibility, follow [status-board.md](status-board.md) to start the standalone board. Click a run to expand its stages, then click a stage to load its inline log or open the corresponding GitHub job log.
 

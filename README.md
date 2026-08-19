@@ -71,7 +71,7 @@ python devtrack/manage.py runserver
 
 The API is available at `http://127.0.0.1:8000/api/`.
 
-Use the local [Swagger-style API console](docs/api-console.html) at `http://127.0.0.1:8000/api-console.html` to select endpoints, edit JSON request bodies, validate them, send requests, and inspect responses.
+Use the local [Swagger-style API console](docs/api-console.html) at `http://127.0.0.1:8000/api-console.html` to select endpoints, edit JSON request bodies, validate them, send requests, and inspect responses. See the [API console JSON body guide](docs/api-console.md) for what to enter for each endpoint.
 
 ## API console examples
 
