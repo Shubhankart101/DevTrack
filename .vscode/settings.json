@@ -7,5 +7,9 @@
     },
     "[git-commit]": {
         "editor.defaultFormatter": "GitHub.copilot-chat"
+    },
+    "chat.tools.terminal.autoApprove": {
+        "git commit": true,
+        "git push": true
     }
 }
