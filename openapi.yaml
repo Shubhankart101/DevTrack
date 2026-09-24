@@ -1,0 +1,170 @@
+openapi: 3.0.0
+info:
+  title: DevTrack API
+  description: Issue tracking API for engineering teams
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/:
+    get:
+      summary: API Root
+      description: List all available API endpoints
+      responses:
+        '200':
+          description: API endpoints
+          content:
+            application/json:
+              example:
+                reporters: /api/reporters/
+                issues: /api/issues/
+  /api/reporters/:
+    get:
+      summary: List Reporters
+      description: Get all reporters
+      responses:
+        '200':
+          description: List of reporters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    team:
+                      type: string
+    post:
+      summary: Create Reporter
+      description: Create a new reporter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+                - email
+                - team
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                email:
+                  type: string
+                team:
+                  type: string
+      responses:
+        '201':
+          description: Reporter created
+        '400':
+          description: Invalid data or duplicate ID
+  /api/reporters/{id}:
+    get:
+      summary: Get Reporter
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Reporter details
+        '404':
+          description: Reporter not found
+  /api/issues/:
+    get:
+      summary: List Issues
+      parameters:
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, in_progress, closed]
+      responses:
+        '200':
+          description: List of issues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    priority:
+                      type: string
+                    reporter_id:
+                      type: integer
+                    created_at:
+                      type: string
+                    message:
+                      type: string
+    post:
+      summary: Create Issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - status
+                - priority
+                - reporter_id
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [open, in_progress, closed]
+                priority:
+                  type: string
+                  enum: [low, medium, high, critical]
+                reporter_id:
+                  type: integer
+      responses:
+        '201':
+          description: Issue created
+        '400':
+          description: Invalid data
+  /api/issues/{id}:
+    get:
+      summary: Get Issue
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Issue details
+        '404':
+          description: Issue not found
