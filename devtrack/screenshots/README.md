@@ -1,18 +1,18 @@
 # Screenshots
 
-Add Postman screenshots for at least one successful request and one failure case.
+Evidence of successful and failing API requests, captured with the local [API console](../../docs/api-console.html) against the running Django dev server.
 
-Suggested files:
-- `postman-success.png`
-- `postman-failure.png`
+- `postman-success.png` — `POST /api/reporters/` returning `201 Created`
+- `postman-failure.png` — `POST /api/reporters/` with a duplicate `id` returning `400 Bad Request` (`Reporter with this ID already exists`)
+
+![Successful POST request](postman-success.png)
+
+![Failed POST request](postman-failure.png)
 
 <img src="../../docs/assets/atg-studiocapa.gif" width="560" alt="Extra momentum">
 
 <img src="../../docs/assets/the-office-the-office-memes.gif" width="560" alt="Office pipeline reaction">
 
-These should demonstrate:
-- successful `POST /api/issues/` or `POST /api/reporters/`
-- validation failure or resource-not-found response
 
 <img src="../../docs/assets/hell-yeah-yeah.gif" width="560" alt="Green build celebration">
 

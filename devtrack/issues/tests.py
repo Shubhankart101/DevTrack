@@ -137,3 +137,11 @@ class ApiTests(TestCase):
     def test_unsupported_methods_return_405(self):
         self.assertEqual(self.client.put('/api/reporters/').status_code, 405)
         self.assertEqual(self.client.put('/api/issues/').status_code, 405)
+
+    def test_request_logging_middleware_logs_method_path_and_status(self):
+        with self.assertLogs('devtrack.request', level='INFO') as captured:
+            response = self.client.get('/api/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('GET /api/ -> 200', captured.output[0])
+
