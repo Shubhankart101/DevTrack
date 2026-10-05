@@ -43,6 +43,13 @@ python devtrack/manage.py check
 python devtrack/manage.py test issues
 ```
 
+You can also run the same tests with pytest (see [docs/testing.md](testing.md) for how it's configured and a sample run):
+
+```bash
+cd devtrack
+pytest -v
+```
+
 ### 5. Start the development server
 
 ```bash

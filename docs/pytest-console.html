@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevTrack | pytest run</title>
+  <style>
+    :root { --bg: #0c1420; --panel: #152235; --line: #30435e; --text: #edf4fb; --muted: #9aabc0; --green: #78d89a; --blue: #63b3ed; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--text); background: radial-gradient(circle at top right, #1c3350 0, var(--bg) 42%); font: 16px/1.5 "Segoe UI", sans-serif; }
+    main { width: min(900px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 72px; }
+    h1 { margin: 0 0 6px; font-size: clamp(1.8rem, 5vw, 2.6rem); letter-spacing: -.03em; }
+    .subtitle { max-width: 680px; margin: 0 0 24px; color: var(--muted); }
+    .terminal { border: 1px solid var(--line); border-radius: 12px; background: #0a111c; overflow: hidden; }
+    .terminal-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.red { background: #ff5f56; } .dot.yellow { background: #ffbd2e; } .dot.green { background: #27c93f; }
+    .terminal-title { margin-left: 8px; color: var(--muted); font: .82rem monospace; }
+    pre { margin: 0; padding: 22px; color: #d1d5db; font: .86rem/1.55 Consolas, monospace; white-space: pre-wrap; }
+    .ok { color: var(--green); font-weight: 700; }
+    .path { color: var(--blue); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>pytest test run</h1>
+    <p class="subtitle">DevTrack's Django test suite (<span class="path">devtrack/issues/tests.py</span>) executed with <strong>pytest</strong> + <strong>pytest-django</strong>, run from the <span class="path">devtrack/</span> project directory.</p>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="terminal-title">PS devtrack&gt; pytest -v --durations=5</span>
+      </div>
+      <pre>============================= test session starts =============================
+platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0
+django: version: 6.1.1, settings: devtrack.settings (from ini)
+rootdir: devtrack
+configfile: pytest.ini
+testpaths: issues
+plugins: django-4.14.0
+collected 10 items
+
+issues/tests.py::ApiTests::test_api_root_lists_endpoints PASSED            [ 10%]
+issues/tests.py::ApiTests::test_duplicate_reporter_returns_400 PASSED      [ 20%]
+issues/tests.py::ApiTests::test_invalid_issue_status_and_priority_return_400 PASSED [ 30%]
+issues/tests.py::ApiTests::test_invalid_json_shapes_and_values_return_400 PASSED [ 40%]
+issues/tests.py::ApiTests::test_issue_creation_uses_priority_description_and_status_filter PASSED [ 50%]
+issues/tests.py::ApiTests::test_low_priority_issue_uses_low_priority_message PASSED [ 60%]
+issues/tests.py::ApiTests::test_reporter_can_be_created_and_retrieved PASSED [ 70%]
+issues/tests.py::ApiTests::test_request_logging_middleware_logs_method_path_and_status PASSED [ 80%]
+issues/tests.py::ApiTests::test_unknown_records_and_reporters_return_404_or_400 PASSED [ 90%]
+issues/tests.py::ApiTests::test_unsupported_methods_return_405 PASSED      [100%]
+
+============================= slowest 5 durations ==============================
+0.16s setup    issues/tests.py::ApiTests::test_api_root_lists_endpoints
+0.03s call     issues/tests.py::ApiTests::test_invalid_json_shapes_and_values_return_400
+0.03s call     issues/tests.py::ApiTests::test_api_root_lists_endpoints
+0.02s call     issues/tests.py::ApiTests::test_unknown_records_and_reporters_return_404_or_400
+0.01s call     issues/tests.py::ApiTests::test_unsupported_methods_return_405
+<span class="ok">============================= 10 passed in 0.50s ===============================</span></pre>
+    </div>
+  </main>
+</body>
+</html>

@@ -341,6 +341,7 @@ Click a pipeline run to expand it, then click an individual stage to view its in
 | --- | --- |
 | Local setup & troubleshooting | [docs/setup.md](docs/setup.md) |
 | API reference & examples | [docs/api.md](docs/api.md) |
+| Testing & pytest | [docs/testing.md](docs/testing.md) |
 | Deployment, pipelines & secrets | [docs/deployment.md](docs/deployment.md) |
 | Pipeline troubleshooting & mitigation | [docs/README.md](docs/README.md) |
 | Architecture, data model & validation | [docs/architecture.md](docs/architecture.md) |
